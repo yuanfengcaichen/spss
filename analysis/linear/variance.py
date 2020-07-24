@@ -2,108 +2,38 @@
 返回方差齐性检验图片
 """
 import base64
+import copy
 from io import BytesIO
 from sklearn import model_selection
 import statsmodels.api as sm
 import pandas as pd
 import numpy as np
 import matplotlib
+
+from analysis.linear.curmodel import setcurmodel
+
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from sklearn import preprocessing
-def varbp(Profit, xselected, yselected):
-    train, test = model_selection.train_test_split(Profit, test_size=0.2, random_state=22)
-
-    x = train[xselected]
-    X = sm.add_constant(x)
-
-    y = train[yselected]
-    est = sm.OLS(y, X)
-    est = est.fit()
-    outliers = est.get_influence()
-
-    # 帽子矩阵
-    leverage = outliers.hat_matrix_diag
-
-    # dffits值,这个很慢
-    dffits = outliers.dffits[0]
-    # 学生化残差
-    resid_stu = outliers.resid_studentized_external
-    # cook距离
-    cook = outliers.cooks_distance[0]
-    # 合并各种异常值检验的统计量值
-    contatl = pd.concat([pd.Series(leverage, name='leverage'),
-                         pd.Series(dffits, name='dffits'),
-                         pd.Series(resid_stu, name='resid_stu'),
-                         pd.Series(cook, name='cook')
-                         ], axis=1)
-
-    train.index = range(train.shape[0])
-    profit_outliers = pd.concat([train, contatl], axis=1)
-    # print(profit_outliers)
-
-    outliers_ratio = np.sum(np.where((np.abs(profit_outliers.resid_stu) > 2), 1, 0)) / profit_outliers.shape[0]
-    # print(outliers_ratio)
-
-    none_outliers = profit_outliers.loc[np.abs(profit_outliers.resid_stu) <= 2,]
-    # print(none_outliers)
-
-    none_outliers = none_outliers.drop(["leverage", "dffits", "resid_stu", "cook"], axis=1)
-    x2 = none_outliers[xselected]
-    y2 = none_outliers[yselected]
-
-    X2 = sm.add_constant(x2.loc[:, :])
-    est2 = sm.OLS(y2, X2).fit()
-
-    BP = sm.stats.diagnostic.het_breuschpagan(est2.resid, exog_het=est2.model.exog)
-    return BP
-
-def variance(Profit, xselected, yselected,oselected_1,oselected_2):
-    train, test = model_selection.train_test_split(Profit, test_size=0.2, random_state=22)
-
-    x = train[xselected]
-    X = sm.add_constant(x)
-
-    y = train[yselected]
-    est = sm.OLS(y, X)
-    est = est.fit()
-    outliers = est.get_influence()
-
-    # 帽子矩阵
-    leverage = outliers.hat_matrix_diag
-
-    # dffits值,这个很慢
-    dffits = outliers.dffits[0]
-    # 学生化残差
-    resid_stu = outliers.resid_studentized_external
-    # cook距离
-    cook = outliers.cooks_distance[0]
-    # 合并各种异常值检验的统计量值
-    contatl = pd.concat([pd.Series(leverage, name='leverage'),
-                         pd.Series(dffits, name='dffits'),
-                         pd.Series(resid_stu, name='resid_stu'),
-                         pd.Series(cook, name='cook')
-                         ], axis=1)
-
-    train.index = range(train.shape[0])
-    profit_outliers = pd.concat([train, contatl], axis=1)
-    # print(profit_outliers)
-
-    outliers_ratio = np.sum(np.where((np.abs(profit_outliers.resid_stu) > 2), 1, 0)) / profit_outliers.shape[0]
-    # print(outliers_ratio)
-
-    none_outliers = profit_outliers.loc[np.abs(profit_outliers.resid_stu) <= 2,]
-    # print(none_outliers)
-
-    none_outliers = none_outliers.drop(["leverage", "dffits", "resid_stu", "cook"], axis=1)
-    x2 = none_outliers[xselected]
-    y2 = none_outliers[yselected]
-
-    X2 = sm.add_constant(x2.loc[:, :])
-    est2 = sm.OLS(y2, X2).fit()
+def varbp(Files,fileindex, xselected, yselected):
+    data = Files.get(fileindex)
+    est2 = data.get("est2")
+    if (est2 != None):
+        BP = sm.stats.diagnostic.het_breuschpagan(est2.resid, exog_het=est2.model.exog)
+        return BP
+    else:
+        setcurmodel(Files, fileindex, xselected, yselected)
+        data = varbp(Files, fileindex, xselected, yselected)
+        return data
 
 
-    #残差方差齐性检验
+def variance(Files,fileindex, xselected, yselected,oselected_1,oselected_2):
+
+    data = Files.get(fileindex)
+    est2 = data.get("est2")
+    none_outliers = data.get("none_outliers")
+
+    # 残差方差齐性检验
     ax1 = plt.subplot2grid(shape=(2, 1), loc=(0, 0))  # 设置第一张子图位置
     # 散点图绘制
     # 学生化残差与自变量散点图
@@ -144,3 +74,4 @@ def variance(Profit, xselected, yselected,oselected_1,oselected_2):
     plt.axis('off')
     plt.close()
     return src
+

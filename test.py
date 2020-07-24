@@ -10,7 +10,8 @@ from statsmodels.iolib.table import (SimpleTable, default_txt_fmt)
 
 
 Profit = pd.read_excel(r'D:\亚龙展旗\模型诊断\上烟三车间0711.xlsx')
-
+values = dict([(col_name, col_mean) for col_name, col_mean in zip(Profit.columns.tolist(), Profit.mean().tolist())]) # 参看1，生成字典，key为列名，value为列对应的均值
+Profit.fillna(value=values, inplace=True) # 参看2，填充空值，value这里选择为字典形式，字典的key指明列，字典的value指明填充该列所用的值
 
 # Profit[np.isnan(Profit)] = 0
 # Profit[np.isinf(Profit)] = 0
@@ -24,3 +25,4 @@ X=sm.add_constant(x)
 est=sm.OLS(y,X)
 est=est.fit()
 est.summary()
+print(type(est))

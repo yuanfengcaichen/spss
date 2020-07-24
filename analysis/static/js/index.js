@@ -7,7 +7,13 @@ const app = new Vue({
         result:0,//上传结果
         filelist:[],//已上传的文件列表
         fileselectnum:0,//已选择的文件序号
+
+        analytype:"linear",//linear:线性回归，gradually:逐步回归
+        criterion:"",//优化规则
+        direction:"",//回归方向
+
         flavours:[],
+        ylist:[],
         xselected: [],
         yselected: [],
         allSelected: false,
@@ -71,7 +77,8 @@ const app = new Vue({
                 // 对响应错误做点什么
                 that.fileloading = false
                 that.imgloading = false
-                that.makeToast('danger',"error")
+                console.log(error)
+                //that.makeToast('danger',"error")
                 return Promise.reject(error);
             });
             return myaxios
@@ -98,6 +105,7 @@ const app = new Vue({
                 if(res.data.result==1){
                     that.result = 1;
                     that.flavours = res.data.resultdata[0][1];
+                    that.ylsit = res.data.resultdata[0][1];
                     for(let i=0;i<res.data.resultdata.length;i++){
                         that.filelist.push(res.data.resultdata[i]);
                     }
@@ -120,10 +128,17 @@ const app = new Vue({
             else if(this.yselected.length == 0){
                 this.makeToast('danger',"请选择y值！")
             }
+            else if(this.analytype=="gradually"&&this.criterion==""){
+                this.makeToast('danger',"请选择优化规则")
+            }
+            else if(this.analytype=="gradually"&&this.direction==""){
+                this.makeToast('danger',"请选择回归方向")
+            }
             else{
                 myaxios = this.creataxios()
                 let that = this
-                data={"fileindex":this.fileselectnum,"xselected":this.xselected,"yselected":this.yselected}
+                data={"fileindex":this.fileselectnum,"xselected":this.xselected,"yselected":this.yselected,
+                    "analytype":this.analytype,"criterion":this.criterion,"direction":this.direction}
                 myaxios.post('/analysis/sendselect',data)
                 .then(function(res){
                     //console.log(res.status)
@@ -145,11 +160,13 @@ const app = new Vue({
         changeselectfile(item){//修改选择的文件后
             this.fileselectnum=item[2];
             this.flavours=item[1];
+            this.ylist=item[1];
             this.xselected=[];
             this.yselected=[];
             this.lineselected=[];
             this.oselected_1='';
             this.oselected_1='';
+
         },
         getprediction(){
             let that = this
@@ -270,6 +287,22 @@ const app = new Vue({
         },
         xselected(newVal, oldVal) {
         // Handle changes in individual flavour checkboxes
+            if(newVal.indexOf(this.yselected)!=-1){//如果选择的yselected在选择的xselected中就将选择的yselected设为空，否则的话会出现选择的x列和y列都有这个值
+                this.yselected=""
+            }
+            this.ylist=[]
+            for(let x of this.flavours){
+                if(newVal.indexOf(x)==-1){
+                    if(this.ylist.indexOf(x)==-1){//如果列表中的值不在x选择的列中也不在ylist中，就添加该值
+                        this.ylist.push(x)
+                    }
+                }
+                else{
+                    if(this.ylist.indexOf(x)!=-1){//如果列表中的值在x选择的列中也在ylist中，就删除该值
+                        this.ylist.splice(this.ylist.indexOf(x),1)
+                    }
+                }
+            }
             if (newVal.length === 0) {
               this.indeterminate = false
               this.allSelected = false

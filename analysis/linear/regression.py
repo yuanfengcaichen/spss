@@ -17,6 +17,8 @@ import base64
 from io import BytesIO
 import copy
 
+from analysis.linear.model import setmodel
+
 
 def returncloumns(file,sheet):#返回读取的文件内容
     #print(pd.ExcelFile(file).sheet_names)
@@ -26,24 +28,23 @@ def returncloumns(file,sheet):#返回读取的文件内容
     Profit.fillna(value=values, inplace=True)  # 参看2，填充空值，value这里选择为字典形式，字典的key指明列，字典的value指明填充该列所用的值
     return Profit
 
-def analysis(Profit,xselected,yselected):#根据文件和选择的x值和y值，生成model
-    train, test = model_selection.train_test_split(Profit, test_size=0.2, random_state=22)
+def analysis(Files,fileindex,xselected,yselected,analytype,criterion,direction):#根据文件和选择的x值和y值，生成model
+    data = Files.get(fileindex)
+    train = data.get("train")
+    test = data.get("test")
+    est = data.get("est")
+    if(est!=None):
+        #理论f值
+        from scipy.stats import f
+        p = est.df_model  # 自变量个数
+        n = train.shape[0]  # 行数，观测个数
+        F_Theroy = f.ppf(q=0.95, dfn=p, dfd=n - p - 1)
 
-    #print(type(xselected))
-    x = train[xselected]
-    X = sm.add_constant(x)
-
-    y = train[yselected]
-    est = sm.OLS(y, X)
-    est = est.fit()
-
-    #理论f值
-    from scipy.stats import f
-    p = est.df_model  # 自变量个数
-    n = train.shape[0]  # 行数，观测个数
-    F_Theroy = f.ppf(q=0.95, dfn=p, dfd=n - p - 1)
-
-    return {'model':est,'f1':est.fvalue,'f2':F_Theroy}
+        return {'model':est,'f1':est.fvalue,'f2':F_Theroy}
+    else:
+        setmodel(Files,fileindex,xselected,yselected,analytype,criterion,direction)
+        data = analysis(Files,fileindex,xselected,yselected,analytype,criterion,direction)
+        return data
 
 def normality(Profit,yselected):#正态性检验
     import matplotlib
@@ -72,8 +73,10 @@ def normality(Profit,yselected):#正态性检验
     plt.close()
     return src
 
-def norks(Profit,yselected):#正态性检验的K-S检验
-    train, test = model_selection.train_test_split(Profit, test_size=0.2, random_state=22)
+def norks(Files,fileindex,yselected):#正态性检验的K-S检验
+    data = Files.get(fileindex)
+    train = data.get("train")
+    test = data.get("test")
     if(len(train)>=5000):
         data = stats.kstest(rvs=train[yselected], args=(train[yselected].mean(), train[yselected].std()),
         cdf="norm")
@@ -83,9 +86,14 @@ def norks(Profit,yselected):#正态性检验的K-S检验
         type='shapiro'
     return {'type':type,'data':data}
 
-def multicol(Profit,xselected):# 返回的是二维数组
-    newProfit = copy.deepcopy(Profit)
-    x = newProfit[xselected]
+def multicol(Files,fileindex,xselected):# 返回的是二维数组
+    data = Files.get(fileindex)
+    xselected_change = data.get("xselected_change")
+    newProfit = data.get("Profit")
+    if (xselected_change == None):  # 没有xselected_change证明是线性回归
+        x = newProfit[xselected]
+    else:
+        x = newProfit[xselected_change]
     from statsmodels.stats.outliers_influence import variance_inflation_factor
     X = sm.add_constant(x.loc[:, :])
     vif = pd.DataFrame()
