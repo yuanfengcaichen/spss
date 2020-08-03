@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="71974669-9868-4a7d-ae9e-3af452e2c154" name="Default" comment="逐步回归1.0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/linear/outliertest.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/linear/outliertest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/static/css/init.css" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/static/css/init.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +49,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="E:/迅雷下载/masr-master/masr-master" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
@@ -271,7 +274,12 @@
       <workItem from="1595382054740" duration="9683000" />
       <workItem from="1595413312663" duration="10175000" />
       <workItem from="1595474481292" duration="5631000" />
-      <workItem from="1595551150418" duration="509000" />
+      <workItem from="1595551150418" duration="1934000" />
+      <workItem from="1595811223715" duration="2890000" />
+      <workItem from="1595895809514" duration="251000" />
+      <workItem from="1595896136462" duration="53000" />
+      <workItem from="1595896258785" duration="1316000" />
+      <workItem from="1596443661323" duration="3291000" />
     </task>
     <task id="LOCAL-00001" summary="逐步回归1.0">
       <created>1595551236775</created>
@@ -287,7 +295,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595551417907</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="逐步回归1.0">
+      <created>1595551914006</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1595551914006</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -298,7 +313,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -309,10 +326,15 @@
     <option name="LAST_COMMIT_MESSAGE" value="逐步回归1.0" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2514" y="112" key="CommitChangelistDialog2" timestamp="1595551485083">
+    <state x="594" y="112" key="CommitChangelistDialog2" timestamp="1596452211369">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2514" y="112" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595552153599" />
+    <state x="594" y="112" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1596452211369" />
+    <state x="2660" y="275" key="FileChooserDialogImpl" timestamp="1595829150502">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2514" y="112" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595551485083" />
+    <state x="2660" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595829150502" />
     <state width="888" height="367" key="GridCell.Tab.0.bottom" timestamp="1595423898265">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -341,10 +363,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="162" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594605245200" />
-    <state x="2472" y="253" key="Vcs.Push.Dialog.v2" timestamp="1595551768815">
+    <state x="2472" y="253" key="Vcs.Push.Dialog.v2" timestamp="1595552192051">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2472" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595551768815" />
+    <state x="2472" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595552192051" />
     <state x="645" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1594601919515">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

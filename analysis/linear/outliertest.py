@@ -67,7 +67,6 @@ def outliertest(Files,fileindex,xselected,yselected):
             # 记得关闭，不然画出来的图是重复的
             plt.axis('off')
             plt.close()
-
             return {'model':est2.summary().as_html(),'outdata':outlist,'src':src}
     else:
         setcurmodel(Files, fileindex, xselected, yselected)
