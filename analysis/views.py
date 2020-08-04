@@ -28,6 +28,12 @@ from analysis.linear.variance import variance, varbp
 
 Files={}
 def index(request):#返回多元线性回归网页
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')  # 判断是否使用代理
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]  # 使用代理获取真实的ip
+    else:
+        ip = request.META.get('REMOTE_ADDR')  # 未使用代理获取IP
+    print(ip)
     return render(request, 'index.html')
     title = '探索性数据分析箱型图'
     matplotlib.use('Agg')  # 不出现画图的框
