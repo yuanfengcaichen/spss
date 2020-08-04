@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="71974669-9868-4a7d-ae9e-3af452e2c154" name="Default" comment="逐步回归1.1,修改逐步回归方向选择，完善异常值列表首行过高的问题">
+    <list default="true" id="71974669-9868-4a7d-ae9e-3af452e2c154" name="Default" comment="逐步回归1.1,修复异常值检测存在未选择列的现象">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/linear/curmodel.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/linear/curmodel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test03.py" beforeDir="false" afterPath="$PROJECT_DIR$/test03.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,7 +278,7 @@
       <workItem from="1595896136462" duration="53000" />
       <workItem from="1595896258785" duration="1316000" />
       <workItem from="1596443661323" duration="4218000" />
-      <workItem from="1596546727504" duration="1679000" />
+      <workItem from="1596546727504" duration="3906000" />
     </task>
     <task id="LOCAL-00001" summary="逐步回归1.0">
       <created>1595551236775</created>
@@ -310,7 +308,21 @@
       <option name="project" value="LOCAL" />
       <updated>1596452239867</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="逐步回归1.1,修复异常值检测存在未选择列的现象">
+      <created>1596548461245</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1596548461245</updated>
+    </task>
+    <task id="LOCAL-00006" summary="逐步回归1.2,防止未知ip访问">
+      <created>1596549850053</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1596549850053</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -332,51 +344,53 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="逐步回归1.0" />
     <MESSAGE value="逐步回归1.1,修改逐步回归方向选择，完善异常值列表首行过高的问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="逐步回归1.1,修改逐步回归方向选择，完善异常值列表首行过高的问题" />
+    <MESSAGE value="逐步回归1.1,修复异常值检测存在未选择列的现象" />
+    <MESSAGE value="逐步回归1.2,防止未知ip访问" />
+    <option name="LAST_COMMIT_MESSAGE" value="逐步回归1.2,防止未知ip访问" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="594" y="112" key="CommitChangelistDialog2" timestamp="1596452282218">
+    <state x="594" y="112" key="CommitChangelistDialog2" timestamp="1596551183047">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="2514" y="112" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595552153599" />
-    <state x="594" y="112" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1596452282218" />
+    <state x="594" y="112" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1596551183047" />
     <state x="2660" y="275" key="FileChooserDialogImpl" timestamp="1595829150502">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2660" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595829150502" />
-    <state width="888" height="367" key="GridCell.Tab.0.bottom" timestamp="1596548003502">
+    <state width="888" height="367" key="GridCell.Tab.0.bottom" timestamp="1596551194031">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="656" height="265" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594964210529" />
     <state width="888" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595322335995" />
-    <state width="888" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596548003502" />
-    <state width="888" height="367" key="GridCell.Tab.0.center" timestamp="1596548003502">
+    <state width="888" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596551194031" />
+    <state width="888" height="367" key="GridCell.Tab.0.center" timestamp="1596551194031">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="656" height="265" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594964210529" />
     <state width="888" height="367" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595322335995" />
-    <state width="888" height="367" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596548003502" />
-    <state width="888" height="367" key="GridCell.Tab.0.left" timestamp="1596548003502">
+    <state width="888" height="367" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596551194031" />
+    <state width="888" height="367" key="GridCell.Tab.0.left" timestamp="1596551194031">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="656" height="265" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594964210529" />
     <state width="888" height="367" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595322335995" />
-    <state width="888" height="367" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596548003502" />
-    <state width="888" height="367" key="GridCell.Tab.0.right" timestamp="1596548003502">
+    <state width="888" height="367" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596551194031" />
+    <state width="888" height="367" key="GridCell.Tab.0.right" timestamp="1596551194031">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="656" height="265" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594964210529" />
     <state width="888" height="367" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595322335995" />
-    <state width="888" height="367" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596548003502" />
+    <state width="888" height="367" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596551194031" />
     <state x="461" y="162" key="SettingsEditor" timestamp="1594605245200">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="162" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594605245200" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1596452304101">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1596549857607">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="2472" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595552192051" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1596452304101" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1596549857607" />
     <state x="645" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1594601919515">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
