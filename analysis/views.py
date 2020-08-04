@@ -27,11 +27,11 @@ from analysis.linear.residual import residual
 from analysis.linear.variance import variance, varbp
 
 
-def getaddress(ip):
+def getaddress(id,ip):
     url = 'https://api.map.baidu.com/location/ip?ak=rGa0BEvgESYRDkgTLSIwkwHN5zkLfGcA&ip='+ip+'&coor=bd09ll'  # 请求接口
     req = requests.get(url)#发送请求
     data = req.json()
-    print(ip + "----" + data.get("address"))#获取请求，得到的是字典格式
+    print(ip + "----" + data.get("content").get("address"))#获取请求，得到的是字典格式
 
 Files={}
 def index(request):#返回多元线性回归网页
@@ -40,7 +40,7 @@ def index(request):#返回多元线性回归网页
         ip = x_forwarded_for.split(',')[0]  # 使用代理获取真实的ip
     else:
         ip = request.META.get('REMOTE_ADDR')  # 未使用代理获取IP
-    t1 = threading.Thread(target=getaddress, args=(ip))  # 新开一个线程获取访问地址
+    t1 = threading.Thread(target=getaddress, args=(1,ip))  # 新开一个线程获取访问地址
     t1.start()
     return render(request, 'index.html')
 
