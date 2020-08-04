@@ -7,7 +7,7 @@ from sklearn import preprocessing
 from time import *
 from analysis.linear.prediction import prediction
 starttime = time()
-Profit = pd.read_excel(r'D:\亚龙展旗\spss\本地版回归分析\中华烘丝0706七批数据对应.xlsx')
+Profit = pd.read_excel(r'D:\亚龙展旗\项目\spss(多元回归分析)\本地版回归分析\中华烘丝0706七批数据对应.xlsx')
 
 #x = Profit.columns.values.tolist()
 

@@ -37,8 +37,7 @@ def setcurmodel(Files,fileindex,xselected,yselected):
         contatl = pd.Series(resid_stu, name='resid_stu')
         x = x.reset_index(drop=True)
         y = y.reset_index(drop=True)
-        train.index = range(train.shape[0])
-        profit_outliers = pd.concat([train, contatl], axis=1)
+        profit_outliers = pd.concat([x,y, contatl], axis = 1)
 
         # 求异常值
         outdata = profit_outliers.loc[np.abs(profit_outliers.resid_stu) > 2,]

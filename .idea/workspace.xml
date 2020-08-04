@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="71974669-9868-4a7d-ae9e-3af452e2c154" name="Default" comment="逐步回归1.0">
+    <list default="true" id="71974669-9868-4a7d-ae9e-3af452e2c154" name="Default" comment="逐步回归1.1,修改逐步回归方向选择，完善异常值列表首行过高的问题">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/linear/outliertest.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/linear/outliertest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/static/css/init.css" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/static/css/init.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/linear/curmodel.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/linear/curmodel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test03.py" beforeDir="false" afterPath="$PROJECT_DIR$/test03.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +65,7 @@
       <recent name="C:\Users\qiyuan\PycharmProjects\spss\static\js" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test04">
+  <component name="RunManager" selected="Python.test">
     <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
       <module name="spss" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -145,7 +145,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test001" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test03" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="spss" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -153,12 +153,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/spss" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spss/test001.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test03.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -239,18 +239,18 @@
     <list>
       <item itemvalue="Django server.spss" />
       <item itemvalue="Python.test" />
-      <item itemvalue="Python.test001" />
       <item itemvalue="Python.test001 (1)" />
       <item itemvalue="Python.gradually" />
       <item itemvalue="Python.test04" />
+      <item itemvalue="Python.test03" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.test03" />
         <item itemvalue="Python.test04" />
         <item itemvalue="Python.gradually" />
         <item itemvalue="Python.test001 (1)" />
-        <item itemvalue="Python.test" />
-        <item itemvalue="Python.test001" />
       </list>
     </recent_temporary>
   </component>
@@ -279,7 +279,8 @@
       <workItem from="1595895809514" duration="251000" />
       <workItem from="1595896136462" duration="53000" />
       <workItem from="1595896258785" duration="1316000" />
-      <workItem from="1596443661323" duration="3291000" />
+      <workItem from="1596443661323" duration="4218000" />
+      <workItem from="1596546727504" duration="1679000" />
     </task>
     <task id="LOCAL-00001" summary="逐步回归1.0">
       <created>1595551236775</created>
@@ -302,7 +303,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595551914006</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="逐步回归1.1,修改逐步回归方向选择，完善异常值列表首行过高的问题">
+      <created>1596452239867</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1596452239867</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -323,50 +331,52 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="逐步回归1.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="逐步回归1.0" />
+    <MESSAGE value="逐步回归1.1,修改逐步回归方向选择，完善异常值列表首行过高的问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="逐步回归1.1,修改逐步回归方向选择，完善异常值列表首行过高的问题" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="594" y="112" key="CommitChangelistDialog2" timestamp="1596452211369">
+    <state x="594" y="112" key="CommitChangelistDialog2" timestamp="1596452282218">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="2514" y="112" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595552153599" />
-    <state x="594" y="112" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1596452211369" />
+    <state x="594" y="112" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1596452282218" />
     <state x="2660" y="275" key="FileChooserDialogImpl" timestamp="1595829150502">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2660" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595829150502" />
-    <state width="888" height="367" key="GridCell.Tab.0.bottom" timestamp="1595423898265">
+    <state width="888" height="367" key="GridCell.Tab.0.bottom" timestamp="1596548003502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="656" height="265" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594964210529" />
     <state width="888" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595322335995" />
-    <state width="888" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595423898265" />
-    <state width="888" height="367" key="GridCell.Tab.0.center" timestamp="1595423898265">
+    <state width="888" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596548003502" />
+    <state width="888" height="367" key="GridCell.Tab.0.center" timestamp="1596548003502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="656" height="265" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594964210529" />
     <state width="888" height="367" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595322335995" />
-    <state width="888" height="367" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595423898265" />
-    <state width="888" height="367" key="GridCell.Tab.0.left" timestamp="1595423898265">
+    <state width="888" height="367" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596548003502" />
+    <state width="888" height="367" key="GridCell.Tab.0.left" timestamp="1596548003502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="656" height="265" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594964210529" />
     <state width="888" height="367" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595322335995" />
-    <state width="888" height="367" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595423898265" />
-    <state width="888" height="367" key="GridCell.Tab.0.right" timestamp="1595423898265">
+    <state width="888" height="367" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596548003502" />
+    <state width="888" height="367" key="GridCell.Tab.0.right" timestamp="1596548003502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="656" height="265" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594964210529" />
     <state width="888" height="367" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595322335995" />
-    <state width="888" height="367" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595423898265" />
+    <state width="888" height="367" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596548003502" />
     <state x="461" y="162" key="SettingsEditor" timestamp="1594605245200">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="162" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594605245200" />
-    <state x="2472" y="253" key="Vcs.Push.Dialog.v2" timestamp="1595552192051">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1596452304101">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="2472" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595552192051" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1596452304101" />
     <state x="645" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1594601919515">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -374,7 +384,8 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/spss$test04.coverage" NAME="test04 Coverage Results" MODIFIED="1595415356386" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/spss$test.coverage" NAME="test Coverage Results" MODIFIED="1595320382109" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spss$test03.coverage" NAME="test03 Coverage Results" MODIFIED="1596547769944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spss$test.coverage" NAME="test Coverage Results" MODIFIED="1596548003492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spss$gradually.coverage" NAME="gradually Coverage Results" MODIFIED="1595387049953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/analysis/linear" />
     <SUITE FILE_PATH="coverage/spss$.coverage" NAME="逐步回归 Coverage Results" MODIFIED="1594968610220" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spss$test001.coverage" NAME="test001 Coverage Results" MODIFIED="1595314287806" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/spss" />
