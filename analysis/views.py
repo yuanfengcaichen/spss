@@ -40,9 +40,10 @@ def index(request):#返回多元线性回归网页
         ip = x_forwarded_for.split(',')[0]  # 使用代理获取真实的ip
     else:
         ip = request.META.get('REMOTE_ADDR')  # 未使用代理获取IP
-    return render(request, 'index.html')
-    t1 = threading.Thread(target=getaddress,args=(ip))  # 新开一个线程获取访问地址
+    t1 = threading.Thread(target=getaddress, args=(ip))  # 新开一个线程获取访问地址
     t1.start()
+    return render(request, 'index.html')
+
 
 def uploadfile(request):#用户上传文件，返回文件中的列名
     global Files
