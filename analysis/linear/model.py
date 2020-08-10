@@ -24,7 +24,6 @@ def setmodel(Files,fileindex,xselected,yselected,analytype,criterion,direction):
         y = train[yselected]
         est = sm.OLS(y, X)
         est = est.fit()
-
         data = Files.get(fileindex)
         data["train"] = train
         data["test"] = test

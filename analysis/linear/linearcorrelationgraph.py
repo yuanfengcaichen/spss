@@ -29,4 +29,4 @@ def linear_correlation(Profit,lineselected):
     # 记得关闭，不然画出来的图是重复的
     plt.axis('off')
     plt.close()
-    return {'src':src,'lindata':linedata.values.tolist()}
+    return {'src':src,'lindata':round(linedata,3).values.tolist()}

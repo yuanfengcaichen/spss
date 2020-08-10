@@ -1,4 +1,5 @@
 import requests
+#requests.get('http://pipigo.club:8085')
 import json
 
 ls2=[1,2,3,4,5,6,7]

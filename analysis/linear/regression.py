@@ -26,6 +26,7 @@ def returncloumns(file,sheet):#返回读取的文件内容
     values = dict([(col_name, col_mean) for col_name, col_mean in
                    zip(Profit.columns.tolist(), Profit.mean().tolist())])  # 参看1，生成字典，key为列名，value为列对应的均值
     Profit.fillna(value=values, inplace=True)  # 参看2，填充空值，value这里选择为字典形式，字典的key指明列，字典的value指明填充该列所用的值
+    round(Profit,3)
     return Profit
 
 def analysis(Files,fileindex,xselected,yselected,analytype,criterion,direction):#根据文件和选择的x值和y值，生成model
@@ -40,7 +41,7 @@ def analysis(Files,fileindex,xselected,yselected,analytype,criterion,direction):
         n = train.shape[0]  # 行数，观测个数
         F_Theroy = f.ppf(q=0.95, dfn=p, dfd=n - p - 1)
 
-        return {'model':est,'f1':est.fvalue,'f2':F_Theroy}
+        return {'model':est,'f1':round(est.fvalue, 3),'f2':round(F_Theroy, 3)}
     else:
         setmodel(Files,fileindex,xselected,yselected,analytype,criterion,direction)
         data = analysis(Files,fileindex,xselected,yselected,analytype,criterion,direction)
@@ -84,7 +85,7 @@ def norks(Files,fileindex,yselected):#正态性检验的K-S检验
     else:
         data = stats.shapiro(train[yselected])
         type='shapiro'
-    return {'type':type,'data':data}
+    return {'type':type,'data':round(data,3)}
 
 def multicol(Files,fileindex,xselected):# 返回的是二维数组
     data = Files.get(fileindex)
@@ -99,5 +100,5 @@ def multicol(Files,fileindex,xselected):# 返回的是二维数组
     vif = pd.DataFrame()
     vif['features'] = X.columns
     vif["VIF Factor"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
-    return vif.values.tolist()#将ndarray类型转为list
+    return round(vif,3).values.tolist()#将ndarray类型转为list
 

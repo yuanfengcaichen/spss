@@ -41,6 +41,7 @@ def setcurmodel(Files,fileindex,xselected,yselected):
 
         # 求异常值
         outdata = profit_outliers.loc[np.abs(profit_outliers.resid_stu) > 2,]
+        round(outdata, 3)
         outlist = []
         ls = copy.deepcopy(usedx)
         ls.append(yselected)
