@@ -370,4 +370,15 @@ const app = new Vue({
             }
         },
     },
+    created() {
+			let uri =window.location.href
+			let x=uri.split('/')
+			let type = x[x.length-1]
+            if(type=="linear"){
+                this.analytype="linear"
+            }
+            else if(type=="gradually"){
+                this.analytype="gradually"
+            }
+		}
 })

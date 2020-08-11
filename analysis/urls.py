@@ -15,5 +15,7 @@ urlpatterns = [
     url('getresidual',views.getresidual),
     url('getbp',views.getbp),
     url('getvariance',views.getvariance),
+    url('linear',views.linear),
+    url('gradually',views.gradually),
     url('',views.index)
 ]

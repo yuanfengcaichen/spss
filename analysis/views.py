@@ -59,6 +59,10 @@ def index(request):#返回多元线性回归网页
     #     pass
     return render(request, 'index.html')
 
+def linear(request):
+    return render(request, 'regression_index.html')
+def gradually(request):
+    return render(request, 'regression_index.html')
 
 def uploadfile(request):#用户上传文件，返回文件中的列名
     global Files

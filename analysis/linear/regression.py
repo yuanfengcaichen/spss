@@ -85,7 +85,8 @@ def norks(Files,fileindex,yselected):#正态性检验的K-S检验
     else:
         data = stats.shapiro(train[yselected])
         type='shapiro'
-    return {'type':type,'data':round(data,3)}
+    #return {'type':type,'data':round(data,3)}
+    return {'type': type, 'data': data}
 
 def multicol(Files,fileindex,xselected):# 返回的是二维数组
     data = Files.get(fileindex)
