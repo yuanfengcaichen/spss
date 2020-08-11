@@ -366,13 +366,13 @@
                     <!--方差齐性检验图形法开始-->
                     <div style="text-align:center;" v-if="checkselect=='方差齐性检验'&&vartype=='图形法'">
                         <div class="graphdiv" >
-                            <div style="display: inline-block;vertical-align:middle" v-if="checkselect=='方差齐性检验'">
+                            <div style="display: block;vertical-align:middle" v-if="checkselect=='方差齐性检验'">
                                 <div>
-                                <lable class="mr-sm-2 mb-3" for="inline-form-custom-select-pref" style="display: block;vertical-align:middle">请选择检测参数1</lable>
+                                <lable class="mr-sm-2 mb-3" for="inline-form-custom-select-pref" style="display: inline-block;vertical-align:middle">请选择检测参数1</lable>
                                 <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
                                   id="inline-form-custom-select-pref"
                                   class="mb-2 mr-sm-2 mb-sm-0"
-                                  :options="flavours"
+                                  :options="xselected"
                                   selected=""
                                   v-model="oselected_1"
                                 ></b-form-select>
@@ -382,7 +382,7 @@
                                 <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
                                   id="inline-form-custom-select-pref"
                                   class="mb-2 mr-sm-2 mb-sm-0"
-                                  :options="flavours"
+                                  :options="xselected"
                                   selected=""
                                   v-model="oselected_2"
                                 ></b-form-select>
