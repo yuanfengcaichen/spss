@@ -396,10 +396,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="逐步回归1.4，用户上传文件，将不必要的操作放入线程中，减少读取文件的时间" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="594" y="112" key="CommitChangelistDialog2" timestamp="1597054587819">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2514" y="112" key="CommitChangelistDialog2" timestamp="1597116754353">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2514" y="112" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595552153599" />
+    <state x="2514" y="112" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1597116754353" />
     <state x="594" y="112" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1597054587819" />
     <state x="2660" y="275" key="FileChooserDialogImpl" timestamp="1595829150502">
       <screen x="1920" y="0" width="1920" height="1040" />
@@ -433,10 +433,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="162" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594605245200" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1597054617776">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2472" y="253" key="Vcs.Push.Dialog.v2" timestamp="1597116778491">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2472" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595552192051" />
+    <state x="2472" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1597116778491" />
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1597054617776" />
     <state x="645" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1594601919515">
       <screen x="0" y="0" width="1920" height="1040" />

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多元线性回归</title>
+    <link rel="stylesheet" href="/static/css/init.css">
+  <link rel="stylesheet" href="/static/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/css/bootstrap-vue.css">
+  <script type="text/javascript" src="/static/js/vue.min.js"></script>
+  <script type="text/javascript" src="/static/js/axios.min.js"></script>
+  <script type="text/javascript" src="/static/js/bootstrap-vue.min.js"></script>
+</head>
+<body style="max-width: 1920px;background:rgba(236,238,245,1);">
+  <div id="app">
+
+      <div class="text-center mt-2" v-if="fileloading">
+              <b-spinner variant="primary" label="Spinning" style="vertical-align:middle"></b-spinner><label style="margin-left: 15px">加载中...</label>
+      </div>
+    <div class="row"  style="max-width: 1900px;margin-left: 0; margin-right: 0">
+
+      <main role="main" class="col-md-12 ml-sm-auto  px-4"  v-if="!showresult">
+
+            <b-card class="mt-2" style="padding: 0">
+              <b-row style="margin-left: 0; margin-right: 0">
+                <b-col cols="3">
+                  <b-button class="mb-2" variant="outline-primary" @click="showaddModal">上传文件</b-button>
+                  <b-modal ref="my-modal" id="modal-1" hide-footer title="上传文件">
+                    <form id="insertuser">
+                      <div class="form-group">
+                        <b-form-file
+                            v-model="file"
+                            :state="Boolean(file)"
+                            placeholder="请选择一个文件"
+                            drop-placeholder="Drop a file here..."
+                            @change="submitfile($event)"
+                        ></b-form-file>
+                      </div>
+                      <b-progress :value="progress" variant="info" striped :animated="true" class="mt-2"></b-progress>
+                    </form>
+                  </b-modal>
+                  <b-card class="mt-1" bg-variant="light" style="min-height: 845px" >
+                      <div class="list-group">
+                          <a href="#" v-for="(item,index) in filelist" @click="changeselectfile(item)" v-text="item[0]"
+                             :class="item[2]==fileselectnum?'list-group-item list-group-item-action  active':'list-group-item list-group-item-action '">
+                          </a>
+                      </div>
+                  </b-card>
+                </b-col>
+                <b-col cols="8" class="ml-3">
+                  <b-button class="mb-2" variant="outline-primary" @click="sendselect">开始分析</b-button>
+                    <div v-if="analytype=='gradually'" style="float: right">
+                        优化规则
+                        <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
+                          id="inline-form-custom-select-pref"
+                          class="mb-2 mr-sm-2 mb-sm-0"
+                          :options="['bic', 'aic', 'ssr', 'rsquared', 'rsquared_adj']"
+                          selected=""
+                          v-model="criterion"
+                        ></b-form-select>
+                        回归方向
+                        <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
+                          id="inline-form-custom-select-pref"
+                          class="mb-2 mr-sm-2 mb-sm-0"
+                          :options="[
+                          { value: 'backward', text: '向前选择法' },
+                          { value: 'forward', text: '向后剔除法' },
+                          { value: 'both', text: '逐步回归法'}]"
+                          selected=""
+                          v-model="direction"
+                        ></b-form-select>
+                    </div>
+                    <b-row>
+                        <b-col cols="6">
+                            <b-card class="mt-1" bg-variant="light" style="min-height: 845px;">
+                                <div>
+                                    <b-form-group>
+                                      <template v-slot:label>
+                                        <b>请选择x轴的列名</b><br>
+                                        <b-form-checkbox v-model="allSelected" :indeterminate="indeterminate"
+                                                         aria-describedby="flavours" aria-controls="flavours"  @change="toggleAll">
+                                            <p  v-text="allSelected ? '取消全选' : '全选'"></p>
+                                        </b-form-checkbox>
+                                      </template>
+                                      <b-form-checkbox-group id="flavors" v-model="xselected" :options="flavours" name="flavors"
+                                                             class="ml-4" aria-label="Individual flavours" stacked
+                                      ></b-form-checkbox-group>
+                                    </b-form-group>
+                                    <!--<div>
+                                          已选择: <strong v-text="xselected"></strong><br>
+                                    </div>-->
+                                  </div>
+                            </b-card>
+                        </b-col>
+                        <b-col cols="6">
+                            <b-card class="mt-1" bg-variant="light" style="min-height: 845px;">
+                                <div>
+                                    <b-form-group>
+                                        <b>请选择y轴的列名</b><br>
+                                          <b-form-group label="">
+                                            <b-form-radio-group v-model="yselected" :options="ylist" plain stacked name="plain-stacked"></b-form-radio-group>
+                                          </b-form-group>
+                                    </b-form-group>
+                                    <div>
+                                          已选择: <strong v-text="yselected"></strong><br>
+                                    </div>
+                                </div>
+                            </b-card>
+                        </b-col>
+                    </b-row>
+                </b-col>
+              </b-row>
+            </b-card>
+      </main>
+        <main role="main" class="col-md-12 ml-sm-auto  px-4 " v-if="showresult">
+            <b-card class="mt-2">
+                <div>
+                    <div class="ml-2" style="display: inline-block;height: 14px;width: 14px;border-radius:7px;background-color: #168AEC;"></div>
+                    <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">分析结果</h3>
+                    <b-button class="mb-2" variant="outline-primary" @click="showresult=!showresult;checkselect='回归模型预测';oselected_1='';oselected_2=''" style="display: inline-block;vertical-align:middle;float: right">返回</b-button>
+                    <div style="clear:both"></div>
+                </div>
+
+                <b-card class="mt-1" bg-variant="light">
+                    <div v-html="model" style="text-align:center;" class="table table-bordered table-hover text-center table-striped table-sm">
+
+                    </div>
+                    <div class="mt-3 mb-3" style="text-align:center;">
+                        <table class="table table-bordered table-hover text-center table-striped table-sm" style="width: 30%">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">计算的F值</th>
+                                    <th scope="col">理论的F值</th>
+                                </tr>
+                            </thead>
+                        <tbody>
+                        <tr>
+                            <td v-text="f1"></td>
+                            <td v-text="f2"></td>
+                        </tr>
+                        </tbody>
+                        </table>
+                        <label class="tip">若计算的F值远远大于理论F值，则拒绝原假设，证明多元线性回归方程是显著的，偏回归系数不全为0，即所有自变量联合起来的组合确实对因变量有显著性影响。</label>
+                    </div>
+                </b-card>
+                <!--选择检测类型-->
+                <div class="<!--text-center--> mt-5 mb-3">
+                    <div class="ml-2" style="display: inline-block;height: 14px;width: 14px;border-radius:7px;background-color: #168AEC;"></div>
+                    <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">模型预测与模型诊断：</h3>
+                    <lable class="mr-sm-2" for="inline-form-custom-select-pref" style="display: inline-block;vertical-align:middle">请选择检测类型</lable>
+                    <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
+                      id="inline-form-custom-select-pref"
+                      class="mb-2 mr-sm-2 mb-sm-0"
+                      :options="['回归模型预测','正态性检验', '多重共线性检验', '线性相关性检验', '异常值检验', '残差独立性检验', '方差齐性检验']"
+                      selected="回归模型预测"
+                      v-model="checkselect"
+                    ></b-form-select>
+                    <b-form-select style="display: inline-block;width: auto;vertical-align:middle" v-if="checkselect=='正态性检验'"
+                      id="inline-form-custom-select-pref"
+                      class="mb-2 mr-sm-2 mb-sm-0"
+                      :options="['直方图','pp图与qq图', 'Shapiro检验和K-S检验']"
+                      selected="直方图"
+                      v-model="nortype"
+                    ></b-form-select>
+                    <b-form-select style="display: inline-block;width: auto;vertical-align:middle" v-if="checkselect=='方差齐性检验'"
+                      id="inline-form-custom-select-pref"
+                      class="mb-2 mr-sm-2 mb-sm-0"
+                      :options="['图形法','BP法']"
+                      selected="图形法"
+                      v-model="vartype"
+                    ></b-form-select>
+                </div>
+                <!--选择检测类型结束-->
+                <div class="text-center mt-2" v-if="imgloading">
+                    <b-spinner variant="primary" label="Spinning" style="vertical-align:middle"></b-spinner><label style="margin-left: 15px">加载中...</label>
+                </div>
+                <b-modal ref="lineselect-modal" id="modal-scrollable" scrollable title="请选择列名">
+                        <b-form-checkbox-group id="flavors" v-model="lineselected" :options="flavours" name="flavors"
+                                             class="ml-4" aria-label="Individual flavours" stacked
+                        ></b-form-checkbox-group>
+                        <template v-slot:modal-footer="{ ok, cancel}">
+                              <b-button variant="primary" @click="getlinearcorrelate">
+                                  确定
+                              </b-button>
+                              <b-button @click="cancel()">
+                                  取消
+                              </b-button>
+                        </template>
+                    </b-modal>
+                <b-card class="mt-1 " bg-variant="light" :show="imgloading" style="min-height: 200px">
+                    <!--回归模型预测开始-->
+                    <div style="text-align:center;" v-if="checkselect=='回归模型预测'">
+                        <div class="graphdiv">
+                            <!--<h4 class="mt-3 mb-3">回归模型预测</h4>-->
+                            <img :src="prediction_src"/>
+                        </div>
+                    </div>
+                    <!--回归模型预测结束-->
+                    <!--正态性检验开始-->
+                    <div style="text-align:center;" v-if="checkselect=='正态性检验'&&nortype=='直方图'">
+                        <div class="graphdiv">
+                            <!--<h4 class="mt-3 mb-3">正态性检验</h4>-->
+                            <img :src="normality_src"/>
+                            <label class="tip">观察核密度曲线和理论正态密度曲线的拟合程度，两条曲线近似吻合，即可认为因变量服从正态分布。</label>
+                        </div>
+                    </div>
+                    <!--正态性检验结束-->
+                    <!--pp图和qq图ppplot qqplot开始-->
+                    <div style="text-align:center;" v-if="checkselect=='正态性检验'&&nortype=='pp图与qq图'">
+                        <div class="graphdiv">
+                            <!--<h4 class="mt-3 mb-3">pp图和qq图</h4>-->
+                            <img :src="pp_src"/>
+                            <img :src="qq_src"/>
+                            <label class="tip">观察到散点均均匀的分布在直线上，即可说明因变量近似服从正态分布。</label>
+                        </div>
+                    </div>
+                    <!--pp图和qq图ppplot qqplot结束-->
+                    <!--K-S检测开始-->
+                    <div style="text-align:center;" v-if="checkselect=='正态性检验'&&nortype=='Shapiro检验和K-S检验'">
+                        <div class="graphdiv" v-if="ksdata.data!=undefined">
+                            <!--<h4 class="mt-3 mb-3">Shapiro检验和 K-S检验</h4>-->
+                            <label class="tip" v-if="ksdata.type=='kstest'">因变量数据量>5000，所以使用 K-S检验法</label>
+                            <label class="tip" v-if="ksdata.type=='shapiro'">因变量数据量<5000，所以使用 Shapiro检验法</label>
+                            <table class="table table-bordered table-hover text-center table-striped table-sm" style="width: 30%">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th scope="col">统计量值</th>
+                                        <th scope="col" v-text="ksdata.data[0]"></th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                        <th scope="col">概率p值</th>
+                                        <th scope="col" v-text="ksdata.data[1]"></th>
+                                </tr>
+                            </table>
+                            <label class="tip">p值如果大于0.05置信水平，则因变量服从正态分布假设</label>
+                        </div>
+                    </div>
+                    <!--K-S检测结束-->
+                    <!--多重共线性检验开始-->
+                    <div style="text-align:center;" v-if="checkselect=='多重共线性检验'">
+                        <div class="graphdiv">
+                            <!--<h4 class="mt-3 mb-3">多重共线性检验</h4>-->
+                            <div style="text-align:center;">
+                                <table class="table table-bordered table-hover text-center table-striped table-sm" style="width: 80%">
+                                    <thead>
+                                        <tr class="table-primary">
+                                            <th scope="col">Id</th>
+                                            <th scope="col">features</th>
+                                            <th scope="col">VIF Factor</th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
+                                <tr v-for="(item,index) in multicollinearity">
+                                    <th scope="row" v-text="index+1">}</th>
+                                    <td v-text="item[0]"></td>
+                                    <td v-text="item[1]"></td>
+                                </tr>
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--多重共线性检验结束-->
+                    <!--线性相关性检验开始-->
+
+                    <div style="text-align:center;" v-if="checkselect=='线性相关性检验'">
+                        <div class="graphdiv" v-if="linear_correlation_src.lindata!=undefined">
+                            <!--<h4 class="mt-3 mb-3">线性相关性检验</h4>-->
+                            <div class="b-table-sticky-header table-responsive mb-3" style="width: 80%; max-height: 450px; margin: 0px auto;">
+                                <table role="table" aria-busy="false" aria-colcount="5" class="table b-table table-bordered table-hover table-striped">
+                                    <thead>
+                                        <tr class="table-primary">
+                                            <th scope="col"></th>
+                                            <th scope="col" v-for="(item,index) in lineselected" v-text="item"></th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
+                                <tr v-for="(item,index) in linear_correlation_src.lindata">
+                                    <th scope="row" v-text="lineselected[index]">}</th>
+                                    <td v-for="(data,index) in linear_correlation_src.lindata[index]" v-text="data"></td>
+                                </tr>
+                                </tbody>
+                                </table>
+                            </div>
+                            <img :src="linear_correlation_src.src" style="width: 80%"/>
+                        </div>
+                    </div>
+                    <!--线性相关性检验结束-->
+                    <!--异常值检验开始-->
+                    <div style="text-align:center;" v-if="checkselect=='异常值检验'">
+                        <div class="graphdiv" v-if="testmodel.src!=undefined">
+                            <!--<h4 class="mt-3 mb-3">异常值检验</h4>-->
+                            <h4 class="mt-3 mb-3">异常值</h4>
+                             <b-table responsive striped hover bordered :items="testmodel.outdata" style="width: 80%;max-height: 450px;margin: 0 auto" sticky-header head-variant="light">
+                             </b-table>
+                            <h4 class="mt-3 mb-3">修正后的模型</h4>
+                            <div v-html="testmodel.model" style="text-align:center;" class="table table-bordered table-hover text-center table-striped table-sm">
+
+                            </div>
+                            <h4 class="mt-3 mb-3">修正后的回归模型预测</h4>
+                            <img :src="testmodel.src" style="width: 700px"/>
+                        </div>
+                    </div>
+                    <!--异常值检验结束-->
+                    <!--残差独立性检验开始-->
+                    <div style="text-align:center;" v-if="checkselect=='残差独立性检验'">
+                        <div class="graphdiv" v-if="testdw!=''">
+                            <!--<h4 class="mt-3 mb-3">残差独立性检验</h4>-->
+                            <table class="table table-bordered table-hover text-center table-striped table-sm" style="width: 30%">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th scope="col">Durbin - Watson</th>
+                                        <th scope="col" v-text="testdw"></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <label class="tip">Durbin - Watson的值，在2左右说明残差之间是不相关的，偏离2较远，说明残差之间是不独立的。</label>
+                        </div>
+                    </div>
+                    <!--残差独立性检验结束-->
+
+                    <!--方差齐性检验BP法开始-->
+                    <div style="text-align:center;" v-if="checkselect=='方差齐性检验'&&vartype=='BP法'">
+                        <div class="graphdiv" v-if="bpdata.length!=0">
+                            <!--<h4 class="mt-3 mb-3">BP法（拉格朗日乘子检验）</h4>-->
+                            <table class="table table-bordered table-hover text-center table-striped table-sm" style="width: 30%">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th scope="col">LM统计量</th>
+                                        <th scope="col" v-text="bpdata[0]"></th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                        <th scope="col">p值</th>
+                                        <th scope="col" v-text="bpdata[1]"></th>
+                                </tr>
+                                <tr>
+                                        <th scope="col">F统计量</th>
+                                        <th scope="col" v-text="bpdata[2]"></th>
+                                </tr>
+                                <tr>
+                                        <th scope="col">F统计量的p值</th>
+                                        <th scope="col" v-text="bpdata[3]"></th>
+                                </tr>
+                            </table>
+                            <label class="tip">若p值均大于0.05，则证明接受残差方差齐性原假设，即残差不受自变量的影响而变化。</label>
+                        </div>
+                    </div>
+                    <!--方差齐性检验BP法结束-->
+                    <!--方差齐性检验图形法开始-->
+                    <div style="text-align:center;" v-if="checkselect=='方差齐性检验'&&vartype=='图形法'">
+                        <div class="graphdiv" >
+                            <div style="display: inline-block;vertical-align:middle" v-if="checkselect=='方差齐性检验'">
+                                <div>
+                                <lable class="mr-sm-2 mb-3" for="inline-form-custom-select-pref" style="display: block;vertical-align:middle">请选择检测参数1</lable>
+                                <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
+                                  id="inline-form-custom-select-pref"
+                                  class="mb-2 mr-sm-2 mb-sm-0"
+                                  :options="flavours"
+                                  selected=""
+                                  v-model="oselected_1"
+                                ></b-form-select>
+                                </div>
+                                <div class="mt-3">
+                                <lable class="mr-sm-2" for="inline-form-custom-select-pref" style="display: inline-block;vertical-align:middle">请选择检测参数2</lable>
+                                <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
+                                  id="inline-form-custom-select-pref"
+                                  class="mb-2 mr-sm-2 mb-sm-0"
+                                  :options="flavours"
+                                  selected=""
+                                  v-model="oselected_2"
+                                ></b-form-select>
+                                </div>
+                            </div>
+                            <!--<h4 class="mt-3 mb-3">方差齐性检验图形法</h4>-->
+                            <img v-if="variance_src!=''" :src="variance_src" style="width: 590px;height:440px" class="mt-3"/>
+                        </div>
+                    </div>
+                    <!--方差齐性检验图形法结束-->
+                </b-card>
+            </b-card>
+        </main>
+    </div>
+  </div>
+</body>
+<script type="text/javascript" src="/static/js/index.js"></script>
+</html>
