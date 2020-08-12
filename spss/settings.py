@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = ')c+6*^x&*+f335%oep@xum58*or$tlpqn3w0nw93#30eda^w4*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #'analysis.apps.AnalysisConfig',
-    'analysis'
+    'analysis',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/opt/nginx/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
+
+#APPEND_SLASH=False#访问路径默认不添加/

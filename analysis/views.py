@@ -5,6 +5,7 @@ from time import *
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from rest_framework.views import APIView
 import json
 import pandas as pd
 # Create your views here.
@@ -45,24 +46,30 @@ def savefile(file,sheet,fid):
     Files[fid]=filedata
 
 Files={}
-def index(request):#返回多元线性回归网页
-    # x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')  # 判断是否使用代理
-    # if x_forwarded_for:
-    #     ip = x_forwarded_for.split(',')[0]  # 使用代理获取真实的ip
-    # else:
-    #     ip = request.META.get('REMOTE_ADDR')  # 未使用代理获取IP
-    # t1 = threading.Thread(target=getaddress, args=(1,ip))  # 新开一个线程获取访问地址
-    # t1.start()
-    # l = pd.DataFrame(list(Red.objects.all())) # 使用数据库读取数据
-    # print(type(l))
-    # for a in l:
-    #     pass
-    return render(request, 'index.html')
+class index(APIView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "index.html")
 
-def linear(request):
-    return render(request, 'regression_index.html')
-def gradually(request):
-    return render(request, 'regression_index.html')
+# def index(request):#返回多元线性回归网页
+#     # x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')  # 判断是否使用代理
+#     # if x_forwarded_for:
+#     #     ip = x_forwarded_for.split(',')[0]  # 使用代理获取真实的ip
+#     # else:
+#     #     ip = request.META.get('REMOTE_ADDR')  # 未使用代理获取IP
+#     # t1 = threading.Thread(target=getaddress, args=(1,ip))  # 新开一个线程获取访问地址
+#     # t1.start()
+#     # l = pd.DataFrame(list(Red.objects.all())) # 使用数据库读取数据
+#     # print(type(l))
+#     # for a in l:
+#     #     pass
+#     return render(request, 'index.html')
+
+class linear(APIView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "regression_index.html")
+class gradually(APIView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "regression_index.html")
 
 def uploadfile(request):#用户上传文件，返回文件中的列名
     global Files
@@ -234,3 +241,5 @@ def getvariance(request):#获取方差齐性检验图片：
         variance_src = variance(Files,fileindex, xselected, yselected,oselected_1,oselected_2)
         responsedata = {"variance_src": variance_src}
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
+
+

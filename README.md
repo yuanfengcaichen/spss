@@ -24,3 +24,15 @@ Username for 'https://github.com':
 ```
 
 此时输入github账号和密码，此处的Username是github账号的邮箱。
+
+# 项目部署注意事项
+
+## 图片中的中文乱码问题
+
+打开python的安装路径，找到“F:\Install\python3.7\Lib\site-packages\matplotlib\mpl-data”路径下的matplotlibrc文件，
+
+将#font.sans-serif : DejaVu Sans, Bitstream Vera Sans, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif这一行注释去掉，并且在冒号后面加“SimHei,”
+
+将#axes.unicode_minus  : True这一行注释去掉，将true改成false
+
+https://jingyan.baidu.com/article/908080223cd201fd91c80fd5.html
