@@ -20,4 +20,5 @@ urlpatterns = [
     url(r"^gradually",views.gradually.as_view(), name='gradually'),
     #url('',views.index),
     url(r"", views.index.as_view(), name='index'),
+    url(r"^index/$", views.index.as_view(), name='index'),
 ]

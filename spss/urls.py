@@ -19,5 +19,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('analysis/', include('analysis.urls')),#本机测试运行
-    path('', include('analysis.urls'))#部署环境
+    #path('', include('analysis.urls'))#部署环境
 ]

@@ -7,8 +7,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from rest_framework.views import APIView
 import json
-import pandas as pd
 # Create your views here.
+'''
 from analysis.linear.curmodel import setcurmodel
 from analysis.linear.linearcorrelationgraph import linear_correlation
 from analysis.linear.model import setmodel
@@ -18,19 +18,12 @@ from analysis.linear.prediction import prediction
 from analysis.linear.regression import analysis, returncloumns, normality, multicol, norks
 
 from openpyxl import load_workbook
-import xlrd
-from django.core.files.base import ContentFile
-import base64
-from io import BytesIO
-import matplotlib
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 #fileList=[]
 from analysis.linear.residual import residual
 from analysis.linear.variance import variance, varbp
 from analysis.models import Red
-
+'''
 
 def getaddress(id,ip):
     url = 'https://api.map.baidu.com/location/ip?ak=rGa0BEvgESYRDkgTLSIwkwHN5zkLfGcA&ip='+ip+'&coor=bd09ll'  # 请求接口
@@ -39,6 +32,7 @@ def getaddress(id,ip):
     #print(ip + "----" + data.get("content").get("address"))#获取请求，得到的是字典格式
 
 def savefile(file,sheet,fid):
+    from analysis.linear.regression import returncloumns
     global Files
     filedata = {}
     p = returncloumns(file, sheet)
@@ -72,27 +66,29 @@ class gradually(APIView):
         return render(request, "regression_index.html")
 
 def uploadfile(request):#用户上传文件，返回文件中的列名
-    global Files
-    file = request.FILES.get("file")
-    filename = file.name
-    tables = load_workbook(file)
-    sheets = tables.sheetnames
-    resultdatas=[]
-    for sheet in sheets:
-        uid = str(uuid.uuid4())
-        fid = ''.join(uid.split('-'))
-        copyfile = copy.deepcopy(file)
-        t1 = threading.Thread(target=savefile, args=(copyfile,sheet,fid))  # 新开一个线程保存读取的文件
-        t1.start()
-        table = tables.get_sheet_by_name(sheet)
-        a = table.max_column
-        columns = []
-        for i in range(1, a + 1):
-            columns.append(table.cell(row=1,column=i).value)
-        resultdata=[filename+'-'+sheet,columns,fid]
-        resultdatas.append(resultdata)
-    ret1 = json.loads(json.dumps(resultdatas, ensure_ascii=False))
-    return JsonResponse({"result": 1,"resultdata":ret1}, json_dumps_params={'ensure_ascii': False})
+    if request.method == "POST":
+        from openpyxl import load_workbook
+        global Files
+        file = request.FILES.get("file")
+        filename = file.name
+        tables = load_workbook(file)
+        sheets = tables.sheetnames
+        resultdatas=[]
+        for sheet in sheets:
+            uid = str(uuid.uuid4())
+            fid = ''.join(uid.split('-'))
+            copyfile = copy.deepcopy(file)
+            t1 = threading.Thread(target=savefile, args=(copyfile,sheet,fid))  # 新开一个线程保存读取的文件
+            t1.start()
+            table = tables.get_sheet_by_name(sheet)
+            a = table.max_column
+            columns = []
+            for i in range(1, a + 1):
+                columns.append(table.cell(row=1,column=i).value)
+            resultdata=[filename+'-'+sheet,columns,fid]
+            resultdatas.append(resultdata)
+        ret1 = json.loads(json.dumps(resultdatas, ensure_ascii=False))
+        return JsonResponse({"result": 1,"resultdata":ret1}, json_dumps_params={'ensure_ascii': False})
 
 
 def sendselect(request):#用户选择x轴和y轴，进行回归分析，返回模型数据
@@ -116,6 +112,9 @@ def sendselect(request):#用户选择x轴和y轴，进行回归分析，返回�
         return None
 
 def sendselecthelp(Files, fileindex, xselected, yselected, analytype, criterion, direction):
+    from analysis.linear.curmodel import setcurmodel
+    from analysis.linear.model import setmodel
+    from analysis.linear.regression import analysis
     t1 = threading.Thread(target=setmodel, args=(
         Files, fileindex, xselected, yselected, analytype, criterion, direction))  # 新开一个线程获取模型
     t1.start()
@@ -129,6 +128,7 @@ def sendselecthelp(Files, fileindex, xselected, yselected, analytype, criterion,
 
 
 def getprediction(request):#获取模型预测图片
+    from analysis.linear.prediction import prediction
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -140,6 +140,7 @@ def getprediction(request):#获取模型预测图片
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getnormality(request):#获取正态性检验的图片
+    from analysis.linear.regression import normality
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -151,6 +152,7 @@ def getnormality(request):#获取正态性检验的图片
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getppqq(request):#获取qqpp图片地址
+    from analysis.linear.ppqqgraph import pp, qq
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -163,6 +165,7 @@ def getppqq(request):#获取qqpp图片地址
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getks(request):
+    from analysis.linear.regression import norks
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -174,6 +177,7 @@ def getks(request):
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getmulticol(request):#获取多重共线性表格数据
+    from analysis.linear.regression import multicol
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -186,6 +190,7 @@ def getmulticol(request):#获取多重共线性表格数据
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getlinearcorrelate(request):#获取线性相关性图片
+    from analysis.linear.linearcorrelationgraph import linear_correlation
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -196,6 +201,7 @@ def getlinearcorrelate(request):#获取线性相关性图片
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getoutliertest(request):#获取异常值检测模型
+    from analysis.linear.outliertest import outliertest
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -208,6 +214,7 @@ def getoutliertest(request):#获取异常值检测模型
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getresidual(request):#获取残差独立性相关数据
+    from analysis.linear.residual import residual
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -219,6 +226,7 @@ def getresidual(request):#获取残差独立性相关数据
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getbp(request):
+    from analysis.linear.variance import varbp
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -230,6 +238,7 @@ def getbp(request):
         return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getvariance(request):#获取方差齐性检验图片：
+    from analysis.linear.variance import variance
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
