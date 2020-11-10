@@ -25,6 +25,22 @@ Username for 'https://github.com':
 
 此时输入github账号和密码，此处的Username是github账号的邮箱。
 
+# 更换国内镜像
+
+```
+# windows系统使用cmd快速设置
+pip install pip -U    # 升级pip到最新版本
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+# 安装依赖
+
+```cmd
+pip install -r requirements.txt
+```
+
+
+
 # 项目部署注意事项
 
 ## 图片中的中文乱码问题
