@@ -16,14 +16,28 @@ from sklearn import preprocessing
 from io import BytesIO
 import base64
 import copy
-def outliertest(Files,fileindex,xselected,yselected):
-    data = Files.get(fileindex)
-    train = data.get("train")
-    test = data.get("test")
-    est = data.get("est")
-    est2 = data.get("est2")
-    outlist = data.get("outlist")
-    xselected_change = data.get("xselected_change")
+#redis模块
+from analysis.tools.myredis import getconn
+import pickle
+
+def outliertest(fileindex,xselected,yselected):
+    conn = getconn()
+    train = pickle.loads(conn.hget(fileindex, 'train'))
+    test = pickle.loads(conn.hget(fileindex, 'test'))
+    est = pickle.loads(conn.hget(fileindex, 'est'))
+    if conn.hexists(fileindex,'est2'):
+        est2 = pickle.loads(conn.hget(fileindex, 'est2'))
+    else:
+        est2 = None
+    if conn.hexists(fileindex, 'outlist'):
+        outlist = pickle.loads(conn.hget(fileindex, 'outlist'))
+    else:
+        outlist = None
+    if conn.hexists(fileindex, 'xselected_change'):
+        xselected_change = pickle.loads(conn.hget(fileindex, 'xselected_change'))
+    else:
+        xselected_change = None
+
     if(est2!=None):
         if (xselected_change == None):  # 没有xselected_change证明是线性回归
             x_test = test[xselected]
@@ -69,6 +83,6 @@ def outliertest(Files,fileindex,xselected,yselected):
             plt.close()
             return {'model':est2.summary().as_html(),'outdata':outlist,'src':src}
     else:
-        setcurmodel(Files, fileindex, xselected, yselected)
-        data=outliertest(Files, fileindex, xselected, yselected)
+        setcurmodel(fileindex, xselected, yselected)
+        data=outliertest(fileindex, xselected, yselected)
         return data

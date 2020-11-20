@@ -16,7 +16,8 @@ from pylab import *
 import base64
 from io import BytesIO
 import copy
-
+from analysis.tools.myredis import getconn
+import pickle
 from analysis.linear.model import setmodel
 
 
@@ -29,11 +30,16 @@ def returncloumns(file,sheet):#返回读取的文件内容
     round(Profit,3)
     return Profit
 
-def analysis(Files,fileindex,xselected,yselected,analytype,criterion,direction):#根据文件和选择的x值和y值，生成model
-    data = Files.get(fileindex)
-    train = data.get("train")
-    test = data.get("test")
-    est = data.get("est")
+def analysis(fileindex,xselected,yselected,analytype,criterion,direction):#根据文件和选择的x值和y值，生成model
+    conn = getconn()
+
+    train = pickle.loads(conn.hget(fileindex, 'train'))
+    test = pickle.loads(conn.hget(fileindex, 'test'))
+    est = pickle.loads(conn.hget(fileindex, 'est'))
+    if conn.hexists(fileindex, 'xselected_change'):
+        xselected_change = pickle.loads(conn.hget(fileindex, 'xselected_change'))
+    else:
+        xselected_change = 'None'
     if(est!=None):
         #理论f值
         from scipy.stats import f
@@ -41,18 +47,19 @@ def analysis(Files,fileindex,xselected,yselected,analytype,criterion,direction):
         n = train.shape[0]  # 行数，观测个数
         F_Theroy = f.ppf(q=0.95, dfn=p, dfd=n - p - 1)
 
-        return {'model':est,'f1':round(est.fvalue, 3),'f2':round(F_Theroy, 3)}
+        return {'model':est,'f1':round(est.fvalue, 3),'f2':round(F_Theroy, 3),'xselected_change':xselected_change}
     else:
-        setmodel(Files,fileindex,xselected,yselected,analytype,criterion,direction)
-        data = analysis(Files,fileindex,xselected,yselected,analytype,criterion,direction)
+        setmodel(fileindex,xselected,yselected,analytype,criterion,direction)
+        data = analysis(fileindex,xselected,yselected,analytype,criterion,direction)
         return data
 
-def normality(Profit,yselected):#正态性检验
+def normality(fileindex,yselected):#正态性检验
     import matplotlib
     matplotlib.use('Agg')
     from matplotlib import pyplot as plt
     import seaborn as sns
-    newProfit=copy.deepcopy(Profit)
+    conn = getconn()
+    newProfit=pickle.loads(conn.hget(fileindex,'Profit'))
     y = newProfit[yselected]
     mpl.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
@@ -74,10 +81,10 @@ def normality(Profit,yselected):#正态性检验
     plt.close()
     return src
 
-def norks(Files,fileindex,yselected):#正态性检验的K-S检验
-    data = Files.get(fileindex)
-    train = data.get("train")
-    test = data.get("test")
+def norks(fileindex,yselected):#正态性检验的K-S检验
+    conn = getconn()
+    train = pickle.loads(conn.hget(fileindex, 'train'))
+    test = pickle.loads(conn.hget(fileindex, 'test'))
     if(len(train)>=5000):
         data = stats.kstest(rvs=train[yselected], args=(train[yselected].mean(), train[yselected].std()),
         cdf="norm")
@@ -88,10 +95,13 @@ def norks(Files,fileindex,yselected):#正态性检验的K-S检验
     #return {'type':type,'data':round(data,3)}
     return {'type': type, 'data': data}
 
-def multicol(Files,fileindex,xselected):# 返回的是二维数组
-    data = Files.get(fileindex)
-    xselected_change = data.get("xselected_change")
-    newProfit = data.get("Profit")
+def multicol(fileindex,xselected):# 返回的是二维数组
+    conn = getconn()
+    newProfit = pickle.loads(conn.hget(fileindex, 'Profit'))
+    if conn.hexists(fileindex, 'xselected_change'):
+        xselected_change = pickle.loads(conn.hget(fileindex, 'xselected_change'))
+    else:
+        xselected_change = None
     if (xselected_change == None):  # 没有xselected_change证明是线性回归
         x = newProfit[xselected]
     else:

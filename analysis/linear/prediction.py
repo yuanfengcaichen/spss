@@ -11,13 +11,19 @@ import base64
 from io import BytesIO
 import pandas as pd
 import numpy as np
+#redis模块
+from analysis.tools.myredis import getconn
+import pickle
 
-def prediction(Files,fileindex,xselected,yselected):
-    data = Files.get(fileindex)
-    train = data.get("train")
-    test = data.get("test")
-    est = data.get("est")
-    xselected_change = data.get("xselected_change")
+def prediction(fileindex,xselected,yselected):
+    conn = getconn()
+    train = pickle.loads(conn.hget(fileindex, 'train'))
+    test = pickle.loads(conn.hget(fileindex, 'test'))
+    est = pickle.loads(conn.hget(fileindex, 'est'))
+    if conn.hexists(fileindex, 'xselected_change'):
+        xselected_change = pickle.loads(conn.hget(fileindex, 'xselected_change'))
+    else:
+        xselected_change = None
     if(xselected_change==None):#没有xselected_change证明是线性回归
         x_test = test[xselected]
         y_test = test[yselected]

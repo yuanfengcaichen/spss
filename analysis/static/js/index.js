@@ -37,6 +37,7 @@ const app = new Vue({
         testdw:'',//检测模型的dw
         vartype:'图形法',//方差齐性检测类型（图形法还是BP法）
         bpdata:[],//BP法数据
+        xselected_change:[],//方差齐性检验可选参数
         oselected_1:'',//方差齐性检验参数1
         oselected_2:'',//方差齐性检验参数2
         variance_src:'',//方差齐性检验图片地址
@@ -49,7 +50,7 @@ const app = new Vue({
             let myaxios = axios.create({});
             myaxios.interceptors.request.use((config)=>{
                 // 在发送请求之前做些什么
-                if(config.url=="/analysis/uploadfile"){
+                if(config.url=="/analysis/uploadfile"||config.url=="/analysis/sendselect"){
                     this.fileloading = true
                 }
                 else{
@@ -66,18 +67,19 @@ const app = new Vue({
             // 添加响应拦截器
             myaxios.interceptors.response.use((response)=> {
                 // 对响应数据做点什么
-                if(response.config.url=="/analysis/uploadfile"){
+                if(response.config.url=="/analysis/uploadfile"||response.config.url=="/analysis/sendselect"){
                     this.fileloading = false
                 }
                 else{
                     this.imgloading = false
                 }
+                //console.log(response)
                 return response;
             }, function (error) {
                 // 对响应错误做点什么
                 that.fileloading = false
                 that.imgloading = false
-                console.log(error)
+                //console.log(error)
                 //that.makeToast('danger',"error")
                 return Promise.reject(error);
             });
@@ -122,6 +124,7 @@ const app = new Vue({
             this.xselected = checked ? this.flavours.slice() : []
           },
         sendselect(){
+            this.cleardata();//初始化结果
             if(this.xselected.length==0){
                 this.makeToast('danger',"请选择x值！")
             }
@@ -141,21 +144,68 @@ const app = new Vue({
                     "analytype":this.analytype,"criterion":this.criterion,"direction":this.direction}
                 myaxios.post('/analysis/sendselect',data)
                 .then(function(res){
-                    //console.log(res.status)
+                    //console.log(res)
                     if(res.status!=200){
-                        this.makeToast('danger',"请选择x值和y值！")
+                        that.makeToast('danger',"请选择x值和y值！")
+                    }
+                    else if(res.data.result=='404'){//文件过期
+                        that.makeToast('danger',res.data.msg)
+                        that.deletefile(that.fileselectnum)
                     }
                     else{
                         that.showresult = true
                         that.model = res.data.model
                         that.f1 = res.data.f1;
                         that.f2 = res.data.f2;
+                        that.xselected_change = res.data.xselected_change=='None' ? that.xselected :res.data.xselected_change//设置方差齐性检验图形法的可选参数
                     }
                 })
                 .catch(function(err){
+                    //console.log(err)
+                    that.fileloading = false
                     that.makeToast('danger',"请勿选择时间或字符的列！")
                 })
             }
+        },
+        deletefile(fid){//删除过期文件
+            var i = 0;
+            for(i;i<this.filelist.length;i++){
+                if(this.filelist[i][2]==fid) {
+                    break
+                }
+                else if(i==this.filelist.length-1){
+                    i =-1
+                    break
+                }
+            }
+            if(i!=-1){
+                this.filelist.splice(i,1)//删除过期文件
+                this.fileselectnum=this.filelist[i][2];//修改已选择的文件序号
+                this.flavours=this.filelist[i][1];
+                this.ylist=this.filelist[i][1];
+            }
+        },
+        cleardata(){
+            this.model="";//模型
+            this.f1="";//计算f值
+            this.f2="";//理论f值
+            this.prediction_src="";//模型预测
+            this.checkselect='回归模型预测';
+            this.nortype='直方图';//正态性检验类型（直方图、qq图还是pp图、K-s检测）
+            this.normality_src='';//正态性检测图片地址
+            this.pp_src='';//pp图
+            this.qq_src='';//qq图
+            this.ksdata={};//K-S检测数据
+            this.multicollinearity=[];//多重共线性检验数据
+            this.lineselected=[];//线性相关性选择的列名
+            this.linear_correlation_src='';//线性相关性检验图片地址
+            this.testmodel='';//异常值检验模型数据
+            this.testdw='';//检测模型的dw
+            this.vartype='图形法';//方差齐性检测类型（图形法还是BP法）
+            this.bpdata=[];//BP法数据
+            this.oselected_1='';//方差齐性检验参数1
+            this.oselected_2='';//方差齐性检验参数2
+            this.variance_src='';//方差齐性检验图片地址
         },
         changeselectfile(item){//修改选择的文件后
             this.fileselectnum=item[2];
@@ -163,10 +213,6 @@ const app = new Vue({
             this.ylist=item[1];
             this.xselected=[];
             this.yselected=[];
-            this.lineselected=[];
-            this.oselected_1='';
-            this.oselected_1='';
-
         },
         getprediction(){
             let that = this

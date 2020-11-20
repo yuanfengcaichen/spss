@@ -1,0 +1,36 @@
+# 中文翻译工具包
+
+def tranmodel(str):
+    #print(str)
+    str = str.replace("Dep. Variable", "因变量")
+    str = str.replace("R-squared", "决定系数")
+    str = str.replace("Model", "模型")
+    str = str.replace("Adj. R-squared", "调整决定系数")
+    str = str.replace("Method", "方法")
+    str = str.replace("F-statistic", "F统计量")
+    str = str.replace("Date", "日期")
+    str = str.replace("Prob (F-statistic)", "P值(F统计量)")
+    str = str.replace("Time", "时间")
+    str = str.replace("Log-Likelihood", "对数似然")
+    str = str.replace("No. Observations", "总自由度")
+    str = str.replace("AIC", "赤池信息准则")
+    str = str.replace("Df Residuals", "残差自由度")
+    str = str.replace("BIC", "贝叶斯信息准则")
+    str = str.replace("Df Model", "模型自由度")
+    str = str.replace("Covariance Type", "协方差型")
+    str = str.replace("OLS Regression Results", "OLS 回归结果")
+
+    str = str.replace("const", "常数项")
+    str = str.replace("coef", "系数")
+    str = str.replace("std err", "系数标准误")
+    str = str.replace("BIC", "贝叶斯信息准则")
+
+    str = str.replace("Omnibus", "Omnibus")
+    str = str.replace("Durbin-Watson", "Durbin-Watson")
+    str = str.replace("Prob(Omnibus)", "Prob(Omnibus)")
+    str = str.replace("Jarque-Bera (JB)", "Jarque-Bera (JB)")
+    str = str.replace("Skew", "偏移")
+    str = str.replace("Prob(JB)", "P值(JB)")
+    str = str.replace("Kurtosis", "峰态")
+    str = str.replace("Cond. No.", "Cond. No.")
+    return str

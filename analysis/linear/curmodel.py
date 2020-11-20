@@ -11,14 +11,25 @@ from analysis.linear.model import setmodel
 
 matplotlib.use('Agg')
 import copy
+from analysis.tools.myredis import getconn
+import pickle
+
+def setcurmodel(fileindex,xselected,yselected):
+    conn = getconn()
+    # data = Files.get(fileindex)
+    # train = data.get("train")
+    # test = data.get("test")
+    # est = data.get("est")
+    # xselected_change = data.get("xselected_change")
 
 
-def setcurmodel(Files,fileindex,xselected,yselected):
-    data = Files.get(fileindex)
-    train = data.get("train")
-    test = data.get("test")
-    est = data.get("est")
-    xselected_change = data.get("xselected_change")
+    train = pickle.loads(conn.hget(fileindex,'train'))
+    test = pickle.loads(conn.hget(fileindex,'test'))
+    est = pickle.loads(conn.hget(fileindex,'est'))
+    if conn.hexists(fileindex, 'xselected_change'):
+        xselected_change = pickle.loads(conn.hget(fileindex, 'xselected_change'))
+    else:
+        xselected_change = None
     if (xselected_change == None):  # 没有xselected_change证明是线性回归
         usedx = xselected
     else:
@@ -57,11 +68,19 @@ def setcurmodel(Files,fileindex,xselected,yselected):
         est2 = sm.OLS(y2, X2).fit()
 
 
+        #
+        # data=Files.get(fileindex)
+        # data["est2"]=est2
+        # data["outlist"]=outlist
+        # data["none_outliers"]=none_outliers
 
-        data=Files.get(fileindex)
-        data["est2"]=est2
-        data["outlist"]=outlist
-        data["none_outliers"]=none_outliers
+        #redis
+        filedata = {}
+        filedata["est2"] = pickle.dumps(est2)
+        filedata["outlist"] = pickle.dumps(outlist)
+        filedata["none_outliers"] = pickle.dumps(none_outliers)
+        conn.hset(fileindex, mapping=filedata)
+        conn.expire(fileindex, 60 * 60 * 2)
     else:
         pass
         #setmodel(Files,fileindex,xselected,yselected,analytype,criterion,direction)

@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path, include
+from analysis import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('analysis/', include('analysis.urls')),#本机测试运行
+    path('', views.index.as_view(), name='index')
     #path('', include('analysis.urls'))#部署环境
 ]

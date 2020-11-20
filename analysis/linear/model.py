@@ -4,8 +4,10 @@
 from sklearn import model_selection
 import statsmodels.api as sm
 import matplotlib
-
 from analysis.linear.gradually import FeatureSelection
+
+from analysis.tools.myredis import getconn
+import pickle
 
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
@@ -14,9 +16,11 @@ from io import BytesIO
 import pandas as pd
 import numpy as np
 
-def setmodel(Files,fileindex,xselected,yselected,analytype,criterion,direction):
+def setmodel(fileindex,xselected,yselected,analytype,criterion,direction):
+    conn = getconn()
+    newProfit = pickle.loads(conn.hget(fileindex, 'Profit'))
     if(analytype=="linear"):
-        train, test = model_selection.train_test_split(Files.get(fileindex).get("Profit"), test_size=0.2, random_state=22)
+        train, test = model_selection.train_test_split(newProfit, test_size=0.2, random_state=22)
 
         x = train[xselected]
         X = sm.add_constant(x)
@@ -24,12 +28,16 @@ def setmodel(Files,fileindex,xselected,yselected,analytype,criterion,direction):
         y = train[yselected]
         est = sm.OLS(y, X)
         est = est.fit()
-        data = Files.get(fileindex)
-        data["train"] = train
-        data["test"] = test
-        data["est"] = est
+
+        #redis
+        filedata = {}
+        filedata["train"] = pickle.dumps(train)
+        filedata["test"] = pickle.dumps(test)
+        filedata["est"] = pickle.dumps(est)
+        conn.hset(fileindex, mapping=filedata)
+        conn.expire(fileindex, 60 * 60 * 2)
     elif(analytype=="gradually"):
-        data_train, data_test = model_selection.train_test_split(Files.get(fileindex).get("Profit"), test_size=0.2, random_state=22)
+        data_train, data_test = model_selection.train_test_split(newProfit, test_size=0.2, random_state=22)
         s=[]
         for x in xselected:
             s.append(x)
@@ -38,9 +46,18 @@ def setmodel(Files,fileindex,xselected,yselected,analytype,criterion,direction):
                                     criterion=criterion,direction=direction)
         est = F.stepwise_model
         xselected_change = F.stepwise_feat_selected_
-        data = Files.get(fileindex)
-        data["train"] = data_train
-        data["test"] = data_test
-        data["est"] = est
-        data["xselected_change"] = xselected_change
+        # data = Files.get(fileindex)
+        # data["train"] = data_train
+        # data["test"] = data_test
+        # data["est"] = est
+        # data["xselected_change"] = xselected_change
+
+        #redis
+        filedata = {}
+        filedata["train"] = pickle.dumps(data_train)
+        filedata["test"] = pickle.dumps(data_test)
+        filedata["est"] = pickle.dumps(est)
+        filedata["xselected_change"] = pickle.dumps(xselected_change)
+        conn.hset(fileindex, mapping=filedata)
+        conn.expire(fileindex, 60 * 60 * 2)
         #print(est.summary())

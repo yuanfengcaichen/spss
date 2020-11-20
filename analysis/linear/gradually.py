@@ -46,7 +46,7 @@ class FeatureSelection():
         criterion_list = ['bic', 'aic', 'ssr', 'rsquared', 'rsquared_adj']
         if criterion not in criterion_list:
             raise IOError('请输入正确的criterion, 必须是以下内容之一：', '\n', criterion_list)
-        print(criterion)
+        #print(criterion)
 
         direction_list = ['backward', 'forward', 'both']
         if direction not in direction_list:
@@ -83,7 +83,8 @@ class FeatureSelection():
             best_new_score = eval('result.' + criterion)
 
             if show_step:
-                print('\nstepwise starting:\n')
+                pass
+                #print('\nstepwise starting:\n')
             iter_times = 0
             # 当变量未剔除完，并且当前评分更新时进行循环
             while remaining and (current_score == best_new_score) and (iter_times < max_iter):
@@ -109,20 +110,23 @@ class FeatureSelection():
                         selected.append(best_candidate)  # 将最新最优分对应的变量放入已选变量列表
                         current_score = best_new_score  # 更新当前评分
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, SSR = %.3f, Fstat = %.3f, FpValue = %.3e' %
-                                  (best_candidate, best_new_score, best_new_fvalue, best_new_f_pvalue))
+                            pass
+                            #print('Adding %s, SSR = %.3f, Fstat = %.3f, FpValue = %.3e' %
+                            #      (best_candidate, best_new_score, best_new_fvalue, best_new_f_pvalue))
                     elif (current_score - best_new_score) >= 0 and (
                             best_new_f_pvalue < f_pvalue_enter) and iter_times == 0:  # 当评分差大于等于0，且为第一次迭代
                         remaining.remove(best_candidate)
                         selected.append(best_candidate)
                         current_score = best_new_score
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif (best_new_f_pvalue < f_pvalue_enter) and iter_times == 0:  # 当评分差小于p_enter，且为第一次迭代
                         selected.append(remaining[0])
                         remaining.remove(remaining[0])
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
                 elif criterion in ['bic', 'aic']:  # 这几个指标取最小值进行优化
                     scores_with_candidates.sort(reverse=True)  # 对评分列表进行降序排序
                     best_new_score, best_candidate, best_new_fvalue, best_new_f_pvalue = scores_with_candidates.pop()  # 提取最小分数及其对应变量
@@ -132,18 +136,21 @@ class FeatureSelection():
                         current_score = best_new_score  # 更新当前评分
                         # print(iter_times)
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif (current_score - best_new_score) >= 0 and iter_times == 0:  # 当评分差大于等于0，且为第一次迭代
                         remaining.remove(best_candidate)
                         selected.append(best_candidate)
                         current_score = best_new_score
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif iter_times == 0:  # 当评分差小于p_enter，且为第一次迭代
                         selected.append(remaining[0])
                         remaining.remove(remaining[0])
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
                 else:
                     scores_with_candidates.sort()
                     best_new_score, best_candidate, best_new_fvalue, best_new_f_pvalue = scores_with_candidates.pop()
@@ -151,20 +158,23 @@ class FeatureSelection():
                         remaining.remove(best_candidate)
                         selected.append(best_candidate)
                         current_score = best_new_score
-                        print(iter_times, flush=True)
+                        #print(iter_times, flush=True)
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif (best_new_score - current_score) >= 0 and iter_times == 0:  # 当评分差大于等于0，且为第一次迭代
                         remaining.remove(best_candidate)
                         selected.append(best_candidate)
                         current_score = best_new_score
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif iter_times == 0:  # 当评分差小于p_enter，且为第一次迭代
                         selected.append(remaining[0])
                         remaining.remove(remaining[0])
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
                 iter_times += 1
 
             if intercept:  # 是否有截距
@@ -193,7 +203,8 @@ class FeatureSelection():
             current_score = eval('result.' + criterion)
             worst_new_score = eval('result.' + criterion)
             if show_step:
-                print('\nstepwise starting:\n')
+                pass
+                #print('\nstepwise starting:\n')
             iter_times = 0
             # 当变量未剔除完，并且当前评分更新时进行循环
             while remaining and (current_score == worst_new_score) and (iter_times < max_iter):
@@ -218,8 +229,9 @@ class FeatureSelection():
                         selected.remove(worst_elimination)  # 从已选变量列表中剔除最新最优分对应的变量
                         current_score = worst_new_score  # 更新当前评分
                         if show_step:  # 是否显示逐步回归过程
-                            print('Removing %s, SSR = %.3f, Fstat = %.3f, FpValue = %.3e' %
-                                  (worst_elimination, worst_new_score, worst_new_fvalue, worst_new_f_pvalue))
+                            pass
+                            #print('Removing %s, SSR = %.3f, Fstat = %.3f, FpValue = %.3e' %
+                            #      (worst_elimination, worst_new_score, worst_new_fvalue, worst_new_f_pvalue))
                 elif criterion in ['bic', 'aic']:  # 这几个指标取最小值进行优化
                     scores_with_eliminations.sort(reverse=False)  # 对评分列表进行降序排序
                     worst_new_score, worst_elimination, worst_new_fvalue, worst_new_f_pvalue = scores_with_eliminations.pop()  # 提取最小分数及其对应变量
@@ -228,7 +240,8 @@ class FeatureSelection():
                         selected.remove(worst_elimination)  # 从已选变量列表中剔除最新最优分对应的变量
                         current_score = worst_new_score  # 更新当前评分
                         if show_step:  # 是否显示逐步回归过程
-                            print('Removing %s, %s = %.3f' % (worst_elimination, criterion, worst_new_score))
+                            pass
+                            #print('Removing %s, %s = %.3f' % (worst_elimination, criterion, worst_new_score))
                 else:
                     scores_with_eliminations.sort(reverse=True)
                     worst_new_score, worst_elimination, worst_new_fvalue, worst_new_f_pvalue = scores_with_eliminations.pop()
@@ -237,7 +250,8 @@ class FeatureSelection():
                         selected.remove(worst_elimination)
                         current_score = worst_new_score
                         if show_step:  # 是否显示逐步回归过程
-                            print('Removing %s, %s = %.3f' % (worst_elimination, criterion, worst_new_score))
+                            pass
+                            #print('Removing %s, %s = %.3f' % (worst_elimination, criterion, worst_new_score))
                 iter_times += 1
 
             if intercept:  # 是否有截距
@@ -264,14 +278,15 @@ class FeatureSelection():
             else:
                 X = df[remaining[0]]
                 #print(X)
-            print(df[response])
+            #print(df[response])
             result = sm.OLS(df[response], X).fit()  # 最小二乘法回归模型拟合
             #print(result.summary())
             current_score = eval('result.' + criterion)
             best_new_score = eval('result.' + criterion)
             #print(current_score, best_new_score)
             if show_step:
-                print('\nstepwise starting:\n')
+                pass
+                #print('\nstepwise starting:\n')
             # 当变量未剔除完，并且当前评分更新时进行循环
             iter_times = 0
             while remaining and (current_score == best_new_score) and (iter_times < max_iter):
@@ -298,20 +313,23 @@ class FeatureSelection():
                         selected.append(best_candidate)  # 将最新最优分对应的变量放入已选变量列表
                         current_score = best_new_score  # 更新当前评分
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, SSR = %.3f, Fstat = %.3f, FpValue = %.3e' %
-                                  (best_candidate, best_new_score, best_new_fvalue, best_new_f_pvalue))
+                            pass
+                            #print('Adding %s, SSR = %.3f, Fstat = %.3f, FpValue = %.3e' %
+                            #      (best_candidate, best_new_score, best_new_fvalue, best_new_f_pvalue))
                     elif (current_score - best_new_score) >= 0 and (
                             best_new_f_pvalue < f_pvalue_enter) and iter_times == 0:  # 当评分差大于等于0，且为第一次迭代
                         remaining.remove(best_candidate)
                         selected.append(best_candidate)
                         current_score = best_new_score
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif (best_new_f_pvalue < f_pvalue_enter) and iter_times == 0:  # 当评分差小于p_enter，且为第一次迭代
                         selected.append(remaining[0])
                         remaining.remove(remaining[0])
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
                 elif criterion in ['bic', 'aic']:  # 这几个指标取最小值进行优化
                     scores_with_candidates.sort(reverse=True)  # 对评分列表进行降序排序
                     best_new_score, best_candidate, best_new_fvalue, best_new_f_pvalue = scores_with_candidates.pop()  # 提取最小分数及其对应变量
@@ -320,18 +338,21 @@ class FeatureSelection():
                         selected.append(best_candidate)  # 将最新最优分对应的变量放入已选变量列表
                         current_score = best_new_score  # 更新当前评分
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif (current_score - best_new_score) >= 0 and iter_times == 0:  # 当评分差大于等于0，且为第一次迭代
                         remaining.remove(best_candidate)
                         selected.append(best_candidate)
                         current_score = best_new_score
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif iter_times == 0:  # 当评分差小于p_enter，且为第一次迭代
                         selected.append(remaining[0])
                         remaining.remove(remaining[0])
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
                 else:
                     scores_with_candidates.sort()
                     best_new_score, best_candidate, best_new_fvalue, best_new_f_pvalue = scores_with_candidates.pop()
@@ -340,18 +361,21 @@ class FeatureSelection():
                         selected.append(best_candidate)
                         current_score = best_new_score
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif (best_new_score - current_score) >= 0 and iter_times == 0:  # 当评分差大于等于0，且为第一次迭代
                         remaining.remove(best_candidate)
                         selected.append(best_candidate)
                         current_score = best_new_score
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (best_candidate, criterion, best_new_score))
                     elif iter_times == 0:  # 当评分差小于p_enter，且为第一次迭代
                         selected.append(remaining[0])
                         remaining.remove(remaining[0])
                         if show_step:  # 是否显示逐步回归过程
-                            print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
+                            pass
+                            #print('Adding %s, %s = %.3f' % (remaining[0], criterion, best_new_score))
                 if intercept:  # 是否有截距
                     X = sm.add_constant(df[selected])
                 else:
@@ -363,9 +387,12 @@ class FeatureSelection():
                     if result.pvalues.max() > p_value_enter:
                         var_removed = result.pvalues[result.pvalues == result.pvalues.max()].index[0]
                         p_value_removed = result.pvalues[result.pvalues == result.pvalues.max()].values[0]
-                        selected.remove(result.pvalues[result.pvalues == result.pvalues.max()].index[0])
+                        x=result.pvalues[result.pvalues == result.pvalues.max()].index[0]
+                        if(x in selected):
+                            selected.remove(result.pvalues[result.pvalues == result.pvalues.max()].index[0])
                         if show_step:  # 是否显示逐步回归过程
-                            print('Removing %s, Pvalue = %.3f' % (var_removed, p_value_removed))
+                            pass
+                            #print('Removing %s, Pvalue = %.3f' % (var_removed, p_value_removed))
                 iter_times += 1
 
             if intercept:  # 是否有截距
@@ -394,11 +421,11 @@ def main():
     data = data.drop(["批次号", "日期", "时间", "批内序号", "管路"], axis=1)
 
     # 分训练集测试集
-    data_train, data_test = model_selection.train_test_split(data, test_size=0.2, random_state=22)
-    data = data_train
-    est = FeatureSelection().stepwise(df=data, response='叶丝干燥（薄板式）温度（出口处） ', max_iter=200,
-                                criterion='bic')
-    print(est.summary())
+    #data_train, data_test = model_selection.train_test_split(data, test_size=0.2, random_state=22)
+    #data = data_train
+    #est = FeatureSelection().stepwise(df=data, response='叶丝干燥（薄板式）温度（出口处） ', max_iter=200,
+    #                            criterion='bic')
+    #print(est.summary())
 
 if __name__ == "__main__":
     main()

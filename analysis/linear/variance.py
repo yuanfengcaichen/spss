@@ -11,33 +11,43 @@ import numpy as np
 import matplotlib
 
 from analysis.linear.curmodel import setcurmodel
-
+#redis模块
+from analysis.tools.myredis import getconn
+import pickle
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from sklearn import preprocessing
-def varbp(Files,fileindex, xselected, yselected):
-    data = Files.get(fileindex)
-    est2 = data.get("est2")
+def varbp(fileindex, xselected, yselected):
+    conn = getconn()
+    if conn.hexists(fileindex, 'est2'):
+        est2 = pickle.loads(conn.hget(fileindex, 'est2'))
+    else:
+        est2 = None
     if (est2 != None):
         BP = sm.stats.diagnostic.het_breuschpagan(est2.resid, exog_het=est2.model.exog)
         return BP
     else:
-        setcurmodel(Files, fileindex, xselected, yselected)
-        data = varbp(Files, fileindex, xselected, yselected)
+        setcurmodel(fileindex, xselected, yselected)
+        data = varbp(fileindex, xselected, yselected)
         return data
 
 
-def variance(Files,fileindex, xselected, yselected,oselected_1,oselected_2):
+def variance(fileindex, xselected, yselected,oselected_1,oselected_2):
+    conn = getconn()
+    if conn.hexists(fileindex, 'est2'):
+        est2 = pickle.loads(conn.hget(fileindex, 'est2'))
+    else:
+        est2 = None
+    if conn.hexists(fileindex, 'none_outliers'):
+        none_outliers = pickle.loads(conn.hget(fileindex, 'none_outliers'))
+    else:
+        none_outliers = None
 
-    data = Files.get(fileindex)
-    est2 = data.get("est2")
-    none_outliers = data.get("none_outliers")
-
-    # 残差方差齐性检验
+    # 残差方差齐性检验 )
     ax1 = plt.subplot2grid(shape=(2, 1), loc=(0, 0))  # 设置第一张子图位置
     # 散点图绘制
     # 学生化残差与自变量散点图
-    # ax1.scatter(none_outliers["蒸汽流量 "], none_outliers.resid_stu )
+    # ax1.scatter(none_outliers["蒸汽流量 "], none_outliers.resid_stu
     # 标准化残差和自变量散点图
     ax1.scatter(none_outliers[oselected_1], (est2.resid - est2.resid.mean()) / est2.resid.std())
     # 添加水平参考线

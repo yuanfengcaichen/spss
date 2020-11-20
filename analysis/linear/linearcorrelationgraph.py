@@ -13,12 +13,16 @@ from pylab import *
 import base64
 from io import BytesIO
 import copy
+#redis模块
+from analysis.tools.myredis import getconn
+import pickle
 
-def linear_correlation(Profit,lineselected):
+def linear_correlation(fileindex,lineselected):
     import matplotlib
     matplotlib.use('Agg')
     from matplotlib import pyplot as plt
-    newProfit = copy.deepcopy(Profit)
+    conn = getconn()
+    newProfit = pickle.loads(conn.hget(fileindex, 'Profit'))
     linedata = newProfit[lineselected].corr()
     #print(linedata)
     sns.pairplot(newProfit.loc[:, lineselected])

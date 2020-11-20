@@ -13,12 +13,16 @@ from pylab import *
 import base64
 from io import BytesIO
 import copy
+#redis模块
+from analysis.tools.myredis import getconn
+import pickle
 
-def pp(Profit,yselected):
+def pp(fileindex,yselected):
     import matplotlib
     matplotlib.use('Agg')
     from matplotlib import pyplot as plt
-    newProfit = copy.deepcopy(Profit)
+    conn = getconn()
+    newProfit = pickle.loads(conn.hget(fileindex, 'Profit'))
     y = newProfit[yselected]
     pq_plot = sm.ProbPlot(y)
     pq_plot.ppplot(line='45')
@@ -32,11 +36,12 @@ def pp(Profit,yselected):
     plt.close()
     return src
 
-def qq(Profit,yselected):
+def qq(fileindex,yselected):
     import matplotlib
     matplotlib.use('Agg')
     from matplotlib import pyplot as plt
-    newProfit = copy.deepcopy(Profit)
+    conn = getconn()
+    newProfit = pickle.loads(conn.hget(fileindex, 'Profit'))
     y = newProfit[yselected]
     pq_plot = sm.ProbPlot(y)
     pq_plot.qqplot(line='q')
