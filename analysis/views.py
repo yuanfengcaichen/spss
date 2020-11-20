@@ -150,6 +150,7 @@ def sendselect(request):#用户选择x轴和y轴，进行回归分析，返回�
         direction = data["direction"]
         conn = getconn()
         if (conn.exists(fileindex)):
+            conn.conn.expire(fileindex, 60*60*2)
             if(analytype=="linear" and conn.hexists(fileindex,'xselected_change')):
                 conn.hdel(fileindex,'xselected_change')
             return sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direction)
