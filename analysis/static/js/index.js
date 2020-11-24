@@ -23,6 +23,8 @@ const app = new Vue({
         model:"",//模型
         f1:"",//计算f值
         f2:"",//理论f值
+        model_params:[],//模型的参数列
+        prevalue:"",//预测值
         prediction_src:"",//模型预测
         checkselect:'回归模型预测',
         nortype:'直方图',//正态性检验类型（直方图、qq图还是pp图、K-s检测）
@@ -155,6 +157,7 @@ const app = new Vue({
                     else{
                         that.showresult = true
                         that.model = res.data.model
+                        that.model_params = res.data.model_params
                         that.f1 = res.data.f1;
                         that.f2 = res.data.f2;
                         that.xselected_change = res.data.xselected_change=='None' ? that.xselected :res.data.xselected_change//设置方差齐性检验图形法的可选参数
@@ -189,6 +192,8 @@ const app = new Vue({
             this.model="";//模型
             this.f1="";//计算f值
             this.f2="";//理论f值
+            this.model_params="";//模型的参数列
+            this.prevalue="";//模型预测值
             this.prediction_src="";//模型预测
             this.checkselect='回归模型预测';
             this.nortype='直方图';//正态性检验类型（直方图、qq图还是pp图、K-s检测）
@@ -222,6 +227,32 @@ const app = new Vue({
             .then(function(res){
                  that.prediction_src = res.data.prediction_src
             })
+        },
+        getprevalue(){
+            params = []
+            let i = 1;
+            checkednull=1
+            for(i;i<this.model_params.length;i++){
+                ref = "param_"+i;
+                value = this.$refs[ref][0].localValue
+                if(value==""){
+                    checkednull = 0;
+                    break;
+                }
+                params.push(value)
+            }//获取相对应的值
+            if(checkednull==0){
+                this.makeToast('danger',"请勿输入空值！")
+            }
+            else{
+                let that = this
+                data={"fileindex":this.fileselectnum,"params":params,}
+                myaxios = this.creataxios()
+                myaxios.post('/analysis/getprevalue',data)
+                .then(function(res){
+                     that.prevalue = res.data.prevalue
+                })
+            }
         },
         getnormality(){
             let that = this

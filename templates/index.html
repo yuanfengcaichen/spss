@@ -158,10 +158,43 @@
                         <label class="tip">若计算的F值远远大于理论F值，则拒绝原假设，证明多元线性回归方程是显著的，偏回归系数不全为0，即所有自变量联合起来的组合确实对因变量有显著性影响。</label>
                     </div>
                 </b-card>
+                <!--模型预测开始-->
+                <div class="<!--text-center--> mt-5 mb-3">
+                    <div class="ml-2" style="display: inline-block;height: 14px;width: 14px;border-radius:7px;background-color: #168AEC;"></div>
+                    <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">模型预测</h3>
+                </div>
+                <b-card class="mt-1 " bg-variant="light"  style="min-height: 200px">
+                    <div style="text-align:center;" v-if="model_params">
+                        <div class="graphdiv" style="padding: 0">
+                            <b-container fluid style="padding: 0">
+                                <b-row>
+                                    <b-col sm="6" style="padding: 5px">
+                                        <b-row class="my-1" v-for="(item,index) in model_params" v-if="`${index}`!=0">
+                                            <b-col sm="6">
+                                                <label v-text="`${item}:`"></label>
+                                            </b-col>
+                                            <b-col sm="6">
+                                                <b-form-input :ref="`param_${index}`" type="number"></b-form-input>
+                                            </b-col>
+                                        </b-row>
+                                    </b-col>
+                                    <b-col sm="6" style="padding: 5px">
+                                        <div style="position: relative; top: 50%;transform: translateY(-50%);">
+                                            <div><label v-text="`${yselected}`"></label></div>
+                                            <div><label v-text="`预测值：${prevalue}`"></label></div>
+                                        </div>
+                                    </b-col>
+                                </b-row>
+                            </b-container>
+                            <b-button pill variant="primary" style="margin-top: 10px" @click="getprevalue">进行预测</b-button>
+                        </div>
+                    </div>
+                </b-card>
+                <!--模型预测结束-->
                 <!--选择检测类型-->
                 <div class="<!--text-center--> mt-5 mb-3">
                     <div class="ml-2" style="display: inline-block;height: 14px;width: 14px;border-radius:7px;background-color: #168AEC;"></div>
-                    <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">模型预测与模型诊断：</h3>
+                    <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">模型诊断：</h3>
                     <lable class="mr-sm-2" for="inline-form-custom-select-pref" style="display: inline-block;vertical-align:middle">请选择检测类型</lable>
                     <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
                       id="inline-form-custom-select-pref"

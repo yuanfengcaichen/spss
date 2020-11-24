@@ -29,6 +29,11 @@ def setmodel(fileindex,xselected,yselected,analytype,criterion,direction):
         est = sm.OLS(y, X)
         est = est.fit()
 
+        # print(type(est.params))
+        # print(type(est.params.index.tolist()))
+        # print(est.params.index.tolist())
+        # print(type(est.params.values.tolist()))
+
         #redis
         filedata = {}
         filedata["train"] = pickle.dumps(train)

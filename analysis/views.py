@@ -3,6 +3,7 @@ import threading
 import uuid
 import time
 import pandas as pd
+import numpy as np
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
@@ -150,7 +151,7 @@ def sendselect(request):#用户选择x轴和y轴，进行回归分析，返回�
         direction = data["direction"]
         conn = getconn()
         if (conn.exists(fileindex)):
-            conn.conn.expire(fileindex, 60*60*2)
+            conn.expire(fileindex, 60*60*2)
             if(analytype=="linear" and conn.hexists(fileindex,'xselected_change')):
                 conn.hdel(fileindex,'xselected_change')
             return sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direction)
@@ -171,9 +172,23 @@ def sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direct
     f = analysis(fileindex, xselected, yselected, analytype, criterion, direction)
     model_summary = tranmodel(f.get('model').summary().as_html())
     model = json.loads(json.dumps(model_summary, ensure_ascii=False))
-    responsedata = {"result": 1, "model": model, "f1": f.get('f1'), "f2": f.get('f2'),'xselected_change':f.get('xselected_change')}
+    model_params = json.loads(json.dumps(f.get('model').params.index.tolist(), ensure_ascii=False))
+    responsedata = {"result": 1, "model": model, "model_params":model_params, "f1": f.get('f1'), "f2": f.get('f2'),'xselected_change':f.get('xselected_change')}
     return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
+def getprevalue(request):#获取模型预测值
+    if request.method == "POST":
+        data = json.loads(request.body)
+        fileindex = data["fileindex"]
+        params = list(map(int,data["params"]))
+        params.insert(0,1)
+        params = np.array(params)
+        conn = getconn()
+        est = pickle.loads(conn.hget(fileindex, 'est'))
+        prevalue = est.params.values * params
+        prevalue = prevalue.sum()
+        prevalue = {"result": 1, "prevalue": round(prevalue, 3)}
+        return JsonResponse(prevalue, json_dumps_params={'ensure_ascii': False})
 
 def getprediction(request):#获取模型预测图片
     from analysis.linear.prediction import prediction

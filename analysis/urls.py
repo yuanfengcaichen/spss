@@ -6,6 +6,7 @@ urlpatterns = [
     #url('uploadfile',views.uploadfile),
     url(r"^uploadfile", views.uploadfile, name='uploadfile'),
     url(r"^sendselect",views.sendselect),
+    url(r"^getprevalue",views.getprevalue),
     url(r"^getprediction",views.getprediction),
     url(r"^getnormality",views.getnormality),
     url(r"^getppqq",views.getppqq),

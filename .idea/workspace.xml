@@ -3,6 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="71974669-9868-4a7d-ae9e-3af452e2c154" name="Default" comment="逐步回归1.5,添加单页面版的回归分析">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/linear/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/linear/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/static/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/static/js/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -289,7 +294,9 @@
       <workItem from="1605055782409" duration="3448000" />
       <workItem from="1605649732862" duration="7969000" />
       <workItem from="1605747837963" duration="22297000" />
-      <workItem from="1605831469884" duration="28195000" />
+      <workItem from="1605831469884" duration="29768000" />
+      <workItem from="1606092086458" duration="4341000" />
+      <workItem from="1606177324806" duration="11976000" />
     </task>
     <task id="LOCAL-00001" summary="逐步回归1.0">
       <created>1595551236775</created>
