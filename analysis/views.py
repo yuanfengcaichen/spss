@@ -186,10 +186,11 @@ def getsin_pre_value(request):#获取模型预测值
         data = json.loads(request.body)
         fileindex = data["fileindex"]
         params = list(map(int,data["params"]))
-        params.insert(0,1)
         params = np.array(params)
         conn = getconn()
         est = pickle.loads(conn.hget(fileindex, 'est'))
+        if 'const' in est.params.index.tolist():
+            params.insert(0, 1)
         sin_pre_value = est.params.values * params
         sin_pre_value = sin_pre_value.sum()
         sin_pre_value = {"result": 1, "sin_pre_value": round(sin_pre_value, 3)}
@@ -209,13 +210,15 @@ def uploadpre_file(request):#上传多值预测文件
     Profit.dropna(inplace=True)
     est = pickle.loads(conn.hget(fileindex, 'est'))
     params = est.params.index.tolist()
-    params.remove('const')
+    if 'const' in params:
+        params.remove('const')
     try:
         Profit = Profit[params]
         Profit = sm.add_constant(Profit)
         y_pred = est.predict(Profit)
         Profit[yselected + "(预测值)"] = y_pred
-        Profit = Profit.drop('const', axis=1)
+        if 'const' in Profit.columns.values.tolist():
+            Profit = Profit.drop('const', axis=1)
         Profit = round(Profit, 3)
         Profit = Profit.to_dict('records')
         # 散点图

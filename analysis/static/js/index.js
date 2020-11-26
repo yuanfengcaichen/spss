@@ -159,7 +159,13 @@ const app = new Vue({
                     else{
                         that.showresult = true
                         that.model = res.data.model
-                        that.model_params = res.data.model_params
+                        params=[]
+                        for(var i=0;i<res.data.model_params.length;i++){
+                            if(res.data.model_params[i]!='const'){
+                                params.push(res.data.model_params[i])
+                            }
+                        }
+                        that.model_params = params
                         that.f1 = res.data.f1;
                         that.f2 = res.data.f2;
                         that.xselected_change = res.data.xselected_change=='None' ? that.xselected :res.data.xselected_change//设置方差齐性检验图形法的可选参数
@@ -232,7 +238,7 @@ const app = new Vue({
         },
         getsin_pre_value(){//获取预测值
             params = []
-            let i = 1;
+            let i = 0;
             checkednull=1
             for(i;i<this.model_params.length;i++){
                 ref = "param_"+i;
