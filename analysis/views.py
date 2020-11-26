@@ -2,6 +2,7 @@ import copy
 import threading
 import uuid
 import time
+import statsmodels.api as sm
 import pandas as pd
 import numpy as np
 import requests
@@ -17,6 +18,10 @@ from analysis.tools.mydecode import mapkeydecode
 from analysis.tools.myredis import getconn
 import pickle
 from analysis.tools.mytranslate import tranmodel
+import matplotlib.pyplot as plt
+from pylab import *
+import base64
+from io import BytesIO
 # Create your views here.
 '''
 from analysis.linear.curmodel import setcurmodel
@@ -176,7 +181,7 @@ def sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direct
     responsedata = {"result": 1, "model": model, "model_params":model_params, "f1": f.get('f1'), "f2": f.get('f2'),'xselected_change':f.get('xselected_change')}
     return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
-def getprevalue(request):#获取模型预测值
+def getsin_pre_value(request):#获取模型预测值
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
@@ -185,10 +190,57 @@ def getprevalue(request):#获取模型预测值
         params = np.array(params)
         conn = getconn()
         est = pickle.loads(conn.hget(fileindex, 'est'))
-        prevalue = est.params.values * params
-        prevalue = prevalue.sum()
-        prevalue = {"result": 1, "prevalue": round(prevalue, 3)}
-        return JsonResponse(prevalue, json_dumps_params={'ensure_ascii': False})
+        sin_pre_value = est.params.values * params
+        sin_pre_value = sin_pre_value.sum()
+        sin_pre_value = {"result": 1, "sin_pre_value": round(sin_pre_value, 3)}
+        return JsonResponse(sin_pre_value, json_dumps_params={'ensure_ascii': False})
+
+def uploadpre_file(request):#上传多值预测文件
+    import matplotlib
+    matplotlib.use('Agg')
+    from matplotlib import pyplot as plt
+    file = request.FILES.get("file")
+    filename = file.name
+    fileindex = request.POST.get("fileindex")
+    xselected = request.POST.get("xselected")
+    yselected = request.POST.get("yselected")
+    conn = getconn()
+    Profit = pd.read_excel(file)
+    Profit.dropna(inplace=True)
+    est = pickle.loads(conn.hget(fileindex, 'est'))
+    params = est.params.index.tolist()
+    params.remove('const')
+    try:
+        Profit = Profit[params]
+        Profit = sm.add_constant(Profit)
+        y_pred = est.predict(Profit)
+        Profit[yselected + "(预测值)"] = y_pred
+        Profit = Profit.drop('const', axis=1)
+        Profit = round(Profit, 3)
+        Profit = Profit.to_dict('records')
+        # 散点图
+        plt.scatter(range(1, len(y_pred) + 1), y_pred, alpha=0.4, edgecolor='none')
+        sio = BytesIO()
+        plt.savefig(sio, format='png', bbox_inches='tight', pad_inches=0.0)
+        data = base64.encodebytes(sio.getvalue()).decode()
+        src = 'data:image/png;base64,' + str(data)
+        # 记得关闭，不然画出来的图是重复的
+        plt.axis('off')
+        plt.close()
+        #Profit = [{"a":1,"b":2,"c":3},{"a":4,"b":5,"c":6}]
+        mul_pre_result = {"mul_pre_values": Profit, "src": src}
+        #ret1 = json.loads(json.dumps(Profit, ensure_ascii=False))
+        return JsonResponse({"result": 1, "mul_pre_result": mul_pre_result}, json_dumps_params={'ensure_ascii': False})
+    except KeyError as e:
+        data = {"result": 500, "except": "keyerror"}
+        return JsonResponse(data, json_dumps_params={'ensure_ascii': False})
+    except Exception as e:
+        data = {"result": 500, "except": "error"}
+        return JsonResponse(data, json_dumps_params={'ensure_ascii': False})
+    except BaseException as e:
+        print(e)
+
+
 
 def getprediction(request):#获取模型预测图片
     from analysis.linear.prediction import prediction

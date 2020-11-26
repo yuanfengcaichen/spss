@@ -24,8 +24,10 @@ const app = new Vue({
         f1:"",//计算f值
         f2:"",//理论f值
         model_params:[],//模型的参数列
-        prevalue:"",//预测值
-        prediction_src:"",//模型预测
+        sin_pre_value:"",//预测单一值
+        mul_pre_file:"",//多值预测文件
+        mul_pre_result:"",//多值预测结果
+        prediction_src:"",//模型预测图片
         checkselect:'回归模型预测',
         nortype:'直方图',//正态性检验类型（直方图、qq图还是pp图、K-s检测）
         normality_src:'',//正态性检测图片地址
@@ -193,7 +195,7 @@ const app = new Vue({
             this.f1="";//计算f值
             this.f2="";//理论f值
             this.model_params="";//模型的参数列
-            this.prevalue="";//模型预测值
+            this.sin_pre_value="";//模型预测值
             this.prediction_src="";//模型预测
             this.checkselect='回归模型预测';
             this.nortype='直方图';//正态性检验类型（直方图、qq图还是pp图、K-s检测）
@@ -228,7 +230,7 @@ const app = new Vue({
                  that.prediction_src = res.data.prediction_src
             })
         },
-        getprevalue(){
+        getsin_pre_value(){//获取预测值
             params = []
             let i = 1;
             checkednull=1
@@ -248,11 +250,95 @@ const app = new Vue({
                 let that = this
                 data={"fileindex":this.fileselectnum,"params":params,}
                 myaxios = this.creataxios()
-                myaxios.post('/analysis/getprevalue',data)
+                myaxios.post('/analysis/getpsin_pre_value',data)
                 .then(function(res){
-                     that.prevalue = res.data.prevalue
+                     that.sin_pre_value = res.data.sin_pre_value
                 })
             }
+        },
+        createPretable(){//生成参数表格
+            var data = []
+            var title = []
+            for(var i=0;i<this.model_params.length;i++){
+                if(this.model_params[i]!='const'){
+                    title.push(this.model_params[i])
+                }
+            }
+            data.push(title)
+            var sheet = XLSX.utils.aoa_to_sheet(data);
+            this.openDownloadDialog(this.sheet2blob(sheet), '参数模板.xlsx');
+        },
+        // 将一个sheet转成最终的excel文件的blob对象，然后利用URL.createObjectURL下载
+        sheet2blob(sheet, sheetName) {
+            sheetName = sheetName || 'sheet1';
+            var workbook = {
+                SheetNames: [sheetName],
+                Sheets: {}
+            };
+            workbook.Sheets[sheetName] = sheet;
+            // 生成excel的配置项
+            var wopts = {
+                bookType: 'xlsx', // 要生成的文件类型
+                bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+                type: 'binary'
+            };
+            var wbout = XLSX.write(workbook, wopts);
+            var blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
+            // 字符串转ArrayBuffer
+            function s2ab(s) {
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf;
+            }
+            return blob;
+        },
+        openDownloadDialog(url, saveName)
+            {
+                if(typeof url == 'object' && url instanceof Blob)
+                {
+                    url = URL.createObjectURL(url); // 创建blob地址
+                }
+                var aLink = document.createElement('a');
+                aLink.href = url;
+                aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+                var event;
+                if(window.MouseEvent) event = new MouseEvent('click');
+                else
+                {
+                    event = document.createEvent('MouseEvents');
+                    event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                }
+                aLink.dispatchEvent(event);
+            },
+        submitpre_file(e){//上传多值预测文件
+            var that=this
+            let file = e.target.files[0];
+            var formdata=new FormData();
+            formdata.append('file',file,);
+            formdata.append('fileindex',this.fileselectnum,);
+            formdata.append("xselected",this.xselected);
+            formdata.append("yselected",this.yselected);
+            let config = {
+                 headers:{'Content-Type':false},
+                onUploadProgress: progressEvent => {
+                    var complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
+                    this.progress = complete
+                }
+            };  //添加请求头
+            myaxios = this.creataxios()
+            myaxios.post('/analysis/uploadpre_file',formdata,config)
+            .then(function(res){
+                if(res.data.result=='1'){
+                    that.mul_pre_result = res.data.mul_pre_result
+                }
+                else if(res.data.result=='500'&&res.data.except=='keyerror'){
+                    that.makeToast('danger',"请上传正确文件或下载参数模板，并重新填写上传")
+                }
+            })
+            .catch(function(err){
+                    that.makeToast('danger',err)
+                })
         },
         getnormality(){
             let that = this
@@ -358,7 +444,9 @@ const app = new Vue({
         progress(curVal,oldVal){
             if(curVal=='100%'){
                 this.makeToast('success',"上传成功！")
-                this.$refs['my-modal'].hide();
+                if(this.$refs['my-modal']!=undefined){
+                    this.$refs['my-modal'].hide();
+                }
                 this.progress=0;
             }
         },
