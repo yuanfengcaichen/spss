@@ -185,12 +185,12 @@ def getsin_pre_value(request):#获取模型预测值
     if request.method == "POST":
         data = json.loads(request.body)
         fileindex = data["fileindex"]
-        params = list(map(int,data["params"]))
-        params = np.array(params)
+        params = list(map(float,data["params"]))
         conn = getconn()
         est = pickle.loads(conn.hget(fileindex, 'est'))
         if 'const' in est.params.index.tolist():
             params.insert(0, 1)
+        params = np.array(params)
         sin_pre_value = est.params.values * params
         sin_pre_value = sin_pre_value.sum()
         sin_pre_value = {"result": 1, "sin_pre_value": round(sin_pre_value, 3)}

@@ -253,10 +253,11 @@ const app = new Vue({
                 this.makeToast('danger',"请勿输入空值！")
             }
             else{
+                //console.log(params)
                 let that = this
                 data={"fileindex":this.fileselectnum,"params":params,}
                 myaxios = this.creataxios()
-                myaxios.post('/analysis/getpsin_pre_value',data)
+                myaxios.post('/analysis/getsin_pre_value',data)
                 .then(function(res){
                      that.sin_pre_value = res.data.sin_pre_value
                 })
@@ -335,6 +336,7 @@ const app = new Vue({
             myaxios = this.creataxios()
             myaxios.post('/analysis/uploadpre_file',formdata,config)
             .then(function(res){
+                //console.log(res.data)
                 if(res.data.result=='1'){
                     that.mul_pre_result = res.data.mul_pre_result
                 }
