@@ -4,7 +4,9 @@ from . import views
 
 urlpatterns = [
     #url('uploadfile',views.uploadfile),
+    url(r"^test", views.test, name='test'),
     url(r"^uploadfile", views.uploadfile, name='uploadfile'),
+    url(r"^linear_result", views.linear_result),
     url(r"^sendselect",views.sendselect),
     url(r"^getsin_pre_value",views.getsin_pre_value),
     url(r"^uploadpre_file",views.uploadpre_file),
@@ -18,8 +20,6 @@ urlpatterns = [
     url(r"^getresidual",views.getresidual),
     url(r"^getbp",views.getbp),
     url(r"^getvariance",views.getvariance),
-    url(r"^linear",views.linear.as_view(), name='linear'),
-    url(r"^gradually",views.gradually.as_view(), name='gradually'),
     #url('',views.index),
     url(r"", views.index.as_view(), name='index'),
     url(r"^index/$", views.index.as_view(), name='index'),

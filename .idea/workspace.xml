@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="71974669-9868-4a7d-ae9e-3af452e2c154" name="Default" comment="逐步回归1.5,添加单页面版的回归分析">
+      <change afterPath="$PROJECT_DIR$/analysis/static/js/linear_result.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analysis/static/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/static/js/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analysis/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/regression_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/linear_result.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,20 +53,20 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/analysis/static/js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\qiyuan\PycharmProjects\spss\analysis\linear" />
-      <recent name="C:\Users\qiyuan\PycharmProjects\spss\analysis" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\亚龙展旗\项目\spss\analysis\static\js" />
       <recent name="C:\Users\qiyuan\PycharmProjects\spss\templates" />
       <recent name="C:\Users\qiyuan\PycharmProjects\spss" />
       <recent name="C:\Users\qiyuan\PycharmProjects\spss\spss" />
       <recent name="C:\Users\qiyuan\PycharmProjects\spss\analysis\static\img" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\qiyuan\PycharmProjects\spss\analysis\linear" />
+      <recent name="C:\Users\qiyuan\PycharmProjects\spss\analysis" />
     </key>
   </component>
   <component name="RunManager" selected="Python.disttest">
@@ -297,7 +302,12 @@
       <workItem from="1606206931840" duration="614000" />
       <workItem from="1606264668722" duration="14298000" />
       <workItem from="1606295502989" duration="17280000" />
-      <workItem from="1606377015251" duration="6411000" />
+      <workItem from="1606377015251" duration="7324000" />
+      <workItem from="1606695267742" duration="32096000" />
+      <workItem from="1606958348746" duration="2488000" />
+      <workItem from="1607055792996" duration="1632000" />
+      <workItem from="1609140282550" duration="2535000" />
+      <workItem from="1609297518371" duration="655000" />
     </task>
     <task id="LOCAL-00001" summary="逐步回归1.0">
       <created>1595551236775</created>

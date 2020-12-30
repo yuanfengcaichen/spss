@@ -40,7 +40,11 @@ from analysis.linear.variance import variance, varbp
 from analysis.models import Red
 '''
 
-
+def test(request):
+    if request.method =="POST":
+        print(request.headers)
+        data = json.loads(request.body)
+        return JsonResponse({"result": 1, "resultdata": data}, json_dumps_params={'ensure_ascii': False})
 
 def getaddress(id,ip):
     url = 'https://api.map.baidu.com/location/ip?ak=rGa0BEvgESYRDkgTLSIwkwHN5zkLfGcA&ip='+ip+'&coor=bd09ll'  # 请求接口
@@ -84,12 +88,6 @@ class index(APIView):
 #     #     pass
 #     return render(request, 'index.html')
 
-class linear(APIView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "regression_index.html")
-class gradually(APIView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "regression_index.html")
 
 def uploadfile(request):#用户上传文件，返回文件中的列名
     from analysis.linear.regression import returncloumns
@@ -144,27 +142,42 @@ def uploadfile(request):#用户上传文件，返回文件中的列名
         return JsonResponse({"result": 1,"resultdata":ret1}, json_dumps_params={'ensure_ascii': False})
 """
 
+def linear_result(request):
+    if request.method =="GET":
+        # for key in request.COOKIES.keys():
+        #     value = json.loads(request.COOKIES.get(key))
+        #     print(value)
+        #     print(type(value))
+        return render(request, "linear_result.html")
+    elif request.method == "POST":
+        datas = json.loads(request.body)
+        response = HttpResponse('ok')
+        for key in datas.keys():
+            value = json.dumps(datas.get(key))
+            response.set_cookie(key,value,1200)
+        return response
+
 def sendselect(request):#用户选择x轴和y轴，进行回归分析，返回模型数据
     if request.method == "POST":
         #print(request.body)
-        data=json.loads(request.body)
-        fileindex = data["fileindex"]
-        xselected = data["xselected"]
-        yselected = data["yselected"]
-        analytype = data["analytype"]
-        criterion = data["criterion"]
-        direction = data["direction"]
+        fileindex = json.loads(request.COOKIES.get("fileindex"))
+        xselected = json.loads(request.COOKIES.get("xselected"))
+        yselected = json.loads(request.COOKIES.get("yselected"))
+        analytype = json.loads(request.COOKIES.get("analytype"))
+        criterion = json.loads(request.COOKIES.get("criterion"))
+        direction = json.loads(request.COOKIES.get("direction"))
+        xlist = json.loads(request.COOKIES.get("xlist"))
         conn = getconn()
         if (conn.exists(fileindex)):
             conn.expire(fileindex, 60*60*2)
             if(analytype=="linear" and conn.hexists(fileindex,'xselected_change')):
                 conn.hdel(fileindex,'xselected_change')
-            return sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direction)
+            return sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direction,xlist)
         else:
             responsedata = {"result": 404,"msg":'上传的文件已过期，请重新上传'}
             return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
-def sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direction):
+def sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direction,xlist):
     from analysis.linear.curmodel import setcurmodel
     from analysis.linear.model import setmodel
     from analysis.linear.regression import analysis
@@ -178,7 +191,8 @@ def sendselecthelp(fileindex, xselected, yselected, analytype, criterion, direct
     model_summary = tranmodel(f.get('model').summary().as_html())
     model = json.loads(json.dumps(model_summary, ensure_ascii=False))
     model_params = json.loads(json.dumps(f.get('model').params.index.tolist(), ensure_ascii=False))
-    responsedata = {"result": 1, "model": model, "model_params":model_params, "f1": f.get('f1'), "f2": f.get('f2'),'xselected_change':f.get('xselected_change')}
+    responsedata = {"result": 1, "model": model, "model_params":model_params, "f1": f.get('f1'), "f2": f.get('f2'),'xselected_change':f.get('xselected_change'),
+                    "fileindex":fileindex,"xselected":xselected,"yselected":yselected,"analytype":analytype,"criterion":criterion,"direction":direction,"xlist":xlist}
     return JsonResponse(responsedata, json_dumps_params={'ensure_ascii': False})
 
 def getsin_pre_value(request):#获取模型预测值

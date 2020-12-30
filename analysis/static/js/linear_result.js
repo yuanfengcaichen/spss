@@ -89,71 +89,10 @@ const app = new Vue({
             });
             return myaxios
         },
-        showaddModal(){
-            this.$refs['my-modal'].show()
-        },
-        submitfile(e){
-            var that=this
-            let file = e.target.files[0];
-            var formdata=new FormData();
-            formdata.append('file',file);
-            let config = {
-                headers:{'Content-Type':false},
-                onUploadProgress: progressEvent => {
-                    var complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
-                    this.progress = complete
-                }
-            };  //添加请求头
-            myaxios = this.creataxios()
-            myaxios.post('/analysis/uploadfile',formdata,config)
-            .then(function(res){
-                //console.log(res)
-                if(res.data.result==1){
-                    that.result = 1;
-                    that.flavours = res.data.resultdata[0][1];
-                    that.ylsit = res.data.resultdata[0][1];
-                    for(let i=0;i<res.data.resultdata.length;i++){
-                        that.filelist.push(res.data.resultdata[i]);
-                    }
-                    that.fileselectnum = res.data.resultdata[0][2];
-                    that.xselected=[];
-                    that.yselected = [];
-                    that.lineselected=[];
-                    that.oselected_1='';
-                    that.oselected_1='';
-                }
-            })
-        },
-        toggleAll(checked) {
-            this.xselected = checked ? this.flavours.slice() : []
-          },
-        redirctto(){
-            myaxios = this.creataxios()
-                let that = this
-                data={"fileindex":this.fileselectnum,"xselected":this.xselected,"yselected":this.yselected,
-                    "analytype":this.analytype,"criterion":this.criterion,"direction":this.direction,"xlist":this.flavours}
-                myaxios.post('/analysis/linear_result',data)
-                .then(function(res){window.open('/analysis/linear_result', '_blank');})
-        },
         sendselect(){
-            this.cleardata();//初始化结果
-            if(this.xselected.length==0){
-                this.makeToast('danger',"请选择x值！")
-            }
-            else if(this.yselected.length == 0){
-                this.makeToast('danger',"请选择y值！")
-            }
-            else if(this.analytype=="gradually"&&this.criterion==""){
-                this.makeToast('danger',"请选择优化规则")
-            }
-            else if(this.analytype=="gradually"&&this.direction==""){
-                this.makeToast('danger',"请选择回归方向")
-            }
-            else{
-                myaxios = this.creataxios()
+            myaxios = this.creataxios()
                 let that = this
-                data={"fileindex":this.fileselectnum,"xselected":this.xselected,"yselected":this.yselected,
-                    "analytype":this.analytype,"criterion":this.criterion,"direction":this.direction,"xlist":this.flavours}
+                data={}
                 myaxios.post('/analysis/sendselect',data)
                 .then(function(res){
                     //console.log(res)
@@ -162,7 +101,7 @@ const app = new Vue({
                     }
                     else if(res.data.result=='404'){//文件过期
                         that.makeToast('danger',res.data.msg)
-                        that.deletefile(that.fileselectnum)
+                        //that.deletefile(that.fileselectnum)
                     }
                     else{
                         that.showresult = true
@@ -176,64 +115,21 @@ const app = new Vue({
                         that.model_params = params
                         that.f1 = res.data.f1;
                         that.f2 = res.data.f2;
+                        that.fileselectnum = res.data.fileindex
+                        that.xselected = res.data.xselected
+                        that.yselected = res.data.yselected
+                        that.analytype = res.data.analytype
+                        that.criterion = res.data.criterion
+                        that.direction = res.data.direction
+                        that.flavours = res.data.xlist
                         that.xselected_change = res.data.xselected_change=='None' ? that.xselected :res.data.xselected_change//设置方差齐性检验图形法的可选参数
                     }
                 })
                 .catch(function(err){
                     //console.log(err)
                     that.fileloading = false
-                    that.makeToast('danger',"请勿选择时间或字符的列！")
+                    that.makeToast('danger',"发生了错误: "+err)
                 })
-            }
-        },
-        deletefile(fid){//删除过期文件
-            var i = 0;
-            for(i;i<this.filelist.length;i++){
-                if(this.filelist[i][2]==fid) {
-                    break
-                }
-                else if(i==this.filelist.length-1){
-                    i =-1
-                    break
-                }
-            }
-            if(i!=-1){
-                this.filelist.splice(i,1)//删除过期文件
-                this.fileselectnum=this.filelist[i][2];//修改已选择的文件序号
-                this.flavours=this.filelist[i][1];
-                this.ylist=this.filelist[i][1];
-            }
-        },
-        cleardata(){
-            this.model="";//模型
-            this.f1="";//计算f值
-            this.f2="";//理论f值
-            this.model_params="";//模型的参数列
-            this.sin_pre_value="";//模型预测值
-            this.prediction_src="";//模型预测
-            this.checkselect='回归模型预测';
-            this.nortype='直方图';//正态性检验类型（直方图、qq图还是pp图、K-s检测）
-            this.normality_src='';//正态性检测图片地址
-            this.pp_src='';//pp图
-            this.qq_src='';//qq图
-            this.ksdata={};//K-S检测数据
-            this.multicollinearity=[];//多重共线性检验数据
-            this.lineselected=[];//线性相关性选择的列名
-            this.linear_correlation_src='';//线性相关性检验图片地址
-            this.testmodel='';//异常值检验模型数据
-            this.testdw='';//检测模型的dw
-            this.vartype='图形法';//方差齐性检测类型（图形法还是BP法）
-            this.bpdata=[];//BP法数据
-            this.oselected_1='';//方差齐性检验参数1
-            this.oselected_2='';//方差齐性检验参数2
-            this.variance_src='';//方差齐性检验图片地址
-        },
-        changeselectfile(item){//修改选择的文件后
-            this.fileselectnum=item[2];
-            this.flavours=item[1];
-            this.ylist=item[1];
-            this.xselected=[];
-            this.yselected=[];
         },
         getprediction(){
             let that = this
@@ -348,7 +244,7 @@ const app = new Vue({
                 if(res.data.result=='1'){
                     that.mul_pre_result = res.data.mul_pre_result
                 }
-                else if(res.data.result=='500'||res.data.except=='keyerror'){
+                else if(res.data.result=='500'&&res.data.except=='keyerror'){
                     that.makeToast('danger',"请上传正确文件或下载参数模板，并重新填写上传")
                 }
             })
@@ -466,35 +362,7 @@ const app = new Vue({
                 this.progress=0;
             }
         },
-        xselected(newVal, oldVal) {
-        // Handle changes in individual flavour checkboxes
-            if(newVal.indexOf(this.yselected)!=-1){//如果选择的yselected在选择的xselected中就将选择的yselected设为空，否则的话会出现选择的x列和y列都有这个值
-                this.yselected=""
-            }
-            this.ylist=[]
-            for(let x of this.flavours){
-                if(newVal.indexOf(x)==-1){
-                    if(this.ylist.indexOf(x)==-1){//如果列表中的值不在x选择的列中也不在ylist中，就添加该值
-                        this.ylist.push(x)
-                    }
-                }
-                else{
-                    if(this.ylist.indexOf(x)!=-1){//如果列表中的值在x选择的列中也在ylist中，就删除该值
-                        this.ylist.splice(this.ylist.indexOf(x),1)
-                    }
-                }
-            }
-            if (newVal.length === 0) {
-              this.indeterminate = false
-              this.allSelected = false
-            } else if (newVal.length === this.flavours.length) {
-              this.indeterminate = false
-              this.allSelected = true
-            } else {
-              this.indeterminate = true
-              this.allSelected = false
-            }
-          },
+
         showresult(newVal, oldVal){
             if(newVal==true){
                 this.getprediction();
@@ -552,14 +420,6 @@ const app = new Vue({
         },
     },
     created() {
-			let uri =window.location.href
-			let x=uri.split('/')
-			let type = x[x.length-1]
-            if(type=="linear"){
-                this.analytype="linear"
-            }
-            else if(type=="gradually"){
-                this.analytype="gradually"
-            }
+        this.sendselect()
 		}
 })

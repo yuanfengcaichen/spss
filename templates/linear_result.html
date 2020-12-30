@@ -1,122 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
-    <title>多元线性回归</title>
+    <title>分析结果</title>
     <link rel="stylesheet" href="/static/css/init.css">
   <link rel="stylesheet" href="/static/css/bootstrap.css">
   <link rel="stylesheet" href="/static/css/bootstrap-vue.css">
   <script type="text/javascript" src="/static/js/vue.min.js"></script>
   <script type="text/javascript" src="/static/js/axios.min.js"></script>
   <script type="text/javascript" src="/static/js/bootstrap-vue.min.js"></script>
+  <script type="text/javascript" src="/static/js/xlsx.full.min.js"></script>
 </head>
 <body style="max-width: 1920px;background:rgba(236,238,245,1);">
   <div id="app">
-
+    <div class="mb-2" style="">
+      <b-navbar toggleable="lg" style="background-color:#FFFFFF">
+          <img src="/static/img/logo01.png" style="margin-left: 39px">
+        <b-navbar-brand href="#" style="font-weight:600;color: #168AEC;text-indent:0.5em">回归分析 REGRESSION ANALYSIS</b-navbar-brand>
+      </b-navbar>
+    </div>
       <div class="text-center mt-2" v-if="fileloading">
               <b-spinner variant="primary" label="Spinning" style="vertical-align:middle"></b-spinner><label style="margin-left: 15px">加载中...</label>
       </div>
     <div class="row"  style="max-width: 1900px;margin-left: 0; margin-right: 0">
-
-      <main role="main" class="col-md-12 ml-sm-auto  px-4"  v-if="!showresult">
-
-            <b-card class="mt-2" style="padding: 0">
-              <b-row style="margin-left: 0; margin-right: 0">
-                <b-col cols="3">
-                  <b-button class="mb-2" variant="outline-primary" @click="showaddModal">上传文件</b-button>
-                  <b-modal ref="my-modal" id="modal-1" hide-footer title="上传文件">
-                    <form id="insertuser">
-                      <div class="form-group">
-                        <b-form-file
-                            v-model="file"
-                            :state="Boolean(file)"
-                            placeholder="请选择一个文件"
-                            drop-placeholder="Drop a file here..."
-                            @change="submitfile($event)"
-                        ></b-form-file>
-                      </div>
-                      <b-progress :value="progress" variant="info" striped :animated="true" class="mt-2"></b-progress>
-                    </form>
-                  </b-modal>
-                  <b-card class="mt-1" bg-variant="light" style="min-height: 845px" >
-                      <div class="list-group">
-                          <a href="#" v-for="(item,index) in filelist" @click="changeselectfile(item)" v-text="item[0]"
-                             :class="item[2]==fileselectnum?'list-group-item list-group-item-action  active':'list-group-item list-group-item-action '">
-                          </a>
-                      </div>
-                  </b-card>
-                </b-col>
-                <b-col cols="8" class="ml-3">
-                  <b-button class="mb-2" variant="outline-primary" @click="sendselect">开始分析</b-button>
-                    <div v-if="analytype=='gradually'" style="float: right">
-                        优化规则
-                        <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
-                          id="inline-form-custom-select-pref"
-                          class="mb-2 mr-sm-2 mb-sm-0"
-                          :options="['bic', 'aic', 'ssr', 'rsquared', 'rsquared_adj']"
-                          selected=""
-                          v-model="criterion"
-                        ></b-form-select>
-                        回归方向
-                        <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
-                          id="inline-form-custom-select-pref"
-                          class="mb-2 mr-sm-2 mb-sm-0"
-                          :options="[
-                          { value: 'backward', text: '向前选择法' },
-                          { value: 'forward', text: '向后剔除法' },
-                          { value: 'both', text: '逐步回归法'}]"
-                          selected=""
-                          v-model="direction"
-                        ></b-form-select>
-                    </div>
-                    <b-row>
-                        <b-col cols="6">
-                            <b-card class="mt-1" bg-variant="light" style="min-height: 845px;">
-                                <div>
-                                    <b-form-group>
-                                      <template v-slot:label>
-                                        <b>请选择x轴的列名</b><br>
-                                        <b-form-checkbox v-model="allSelected" :indeterminate="indeterminate"
-                                                         aria-describedby="flavours" aria-controls="flavours"  @change="toggleAll">
-                                            <p  v-text="allSelected ? '取消全选' : '全选'"></p>
-                                        </b-form-checkbox>
-                                      </template>
-                                      <b-form-checkbox-group id="flavors" v-model="xselected" :options="flavours" name="flavors"
-                                                             class="ml-4" aria-label="Individual flavours" stacked
-                                      ></b-form-checkbox-group>
-                                    </b-form-group>
-                                    <!--<div>
-                                          已选择: <strong v-text="xselected"></strong><br>
-                                    </div>-->
-                                  </div>
-                            </b-card>
-                        </b-col>
-                        <b-col cols="6">
-                            <b-card class="mt-1" bg-variant="light" style="min-height: 845px;">
-                                <div>
-                                    <b-form-group>
-                                        <b>请选择y轴的列名</b><br>
-                                          <b-form-group label="">
-                                            <b-form-radio-group v-model="yselected" :options="ylist" plain stacked name="plain-stacked"></b-form-radio-group>
-                                          </b-form-group>
-                                    </b-form-group>
-                                    <div>
-                                          已选择: <strong v-text="yselected"></strong><br>
-                                    </div>
-                                </div>
-                            </b-card>
-                        </b-col>
-                    </b-row>
-                </b-col>
-              </b-row>
-            </b-card>
-      </main>
-        <main role="main" class="col-md-12 ml-sm-auto  px-4 " v-if="showresult">
+        <main role="main" class="col-md-12 ml-sm-auto col-lg-12  px-4 " v-if="showresult">
             <b-card class="mt-2">
                 <div>
                     <div class="ml-2" style="display: inline-block;height: 14px;width: 14px;border-radius:7px;background-color: #168AEC;"></div>
                     <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">分析结果</h3>
-                    <b-button class="mb-2" variant="outline-primary" @click="showresult=!showresult;checkselect='回归模型预测';oselected_1='';oselected_2=''" style="display: inline-block;vertical-align:middle;float: right">返回</b-button>
+                    <!--<b-button class="mb-2" variant="outline-primary" @click="showresult=!showresult;checkselect='回归模型预测';oselected_1='';oselected_2=''" style="display: inline-block;vertical-align:middle;float: right">返回</b-button>-->
                     <div style="clear:both"></div>
                 </div>
 
@@ -142,10 +54,66 @@
                         <label class="tip">若计算的F值远远大于理论F值，则拒绝原假设，证明多元线性回归方程是显著的，偏回归系数不全为0，即所有自变量联合起来的组合确实对因变量有显著性影响。</label>
                     </div>
                 </b-card>
+                <!--模型预测开始-->
+                <div class="<!--text-center--> mt-5 mb-3">
+                    <div class="ml-2" style="display: inline-block;height: 14px;width: 14px;border-radius:7px;background-color: #168AEC;"></div>
+                    <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">模型预测</h3>
+                </div>
+                <b-card class="mt-1 " bg-variant="light"  style="min-height: 200px">
+                    <div>
+                        <b-tabs content-class="mt-3">
+                            <b-tab title="单一值预测" active>
+                                <div style="text-align:center;" v-if="model_params">
+                                    <div class="graphdiv" style="padding: 0">
+                                        <b-container fluid style="padding: 0">
+                                            <b-row>
+                                                <b-col sm="6" style="padding: 5px">
+                                                    <b-row class="my-1" v-for="(item,index) in model_params">
+                                                        <b-col sm="6">
+                                                            <label v-text="`${item}:`"></label>
+                                                        </b-col>
+                                                        <b-col sm="6">
+                                                            <b-form-input :ref="`param_${index}`" type="number"></b-form-input>
+                                                        </b-col>
+                                                    </b-row>
+                                                </b-col>
+                                                <b-col sm="6" style="padding: 5px">
+                                                    <div style="position: relative; top: 50%;transform: translateY(-50%);">
+                                                        <div><label v-text="`${yselected}`"></label></div>
+                                                        <div><label v-text="`预测值：${sin_pre_value}`"></label></div>
+                                                    </div>
+                                                </b-col>
+                                            </b-row>
+                                        </b-container>
+                                        <b-button pill variant="primary" style="margin-top: 10px" @click="getsin_pre_value">进行预测</b-button>
+                                    </div>
+                                </div>
+                            </b-tab>
+                            <b-tab title="多值预测及残差图分析" >
+                                <b-row>
+                                    <b-col sm="6" style="margin: 0 auto;">
+                                        <b-button pill variant="primary" style="margin-top: 10px" @click="createPretable">下载参数模板</b-button>
+                                    </b-col>
+                                    <b-col sm="6" style="margin: 0 auto;">
+                                         <b-form-file v-model="mul_pre_file" class="mt-3" placeholder="请选择文件" @change="submitpre_file($event)" browse-text="上传文件"></b-form-file>
+                                     </b-col>
+                                </b-row>
+                                <div style="text-align:center;margin-top: 40px"  v-if="mul_pre_result!=undefined">
+                                    <b-table responsive striped hover bordered :items="mul_pre_result.mul_pre_values" style="width: 80%;max-height: 450px;margin: 0 auto" sticky-header head-variant="light">
+                                    </b-table>
+                                    <div class="graphdiv" style="margin-top: 10px">
+                                        <img :src="mul_pre_result.src" style="width: 60%"/>
+                                    </div>
+                                </div>
+                            </b-tab>
+                        </b-tabs>
+                    </div>
+                </b-card>
+                <!--模型预测结束-->
                 <!--选择检测类型-->
                 <div class="<!--text-center--> mt-5 mb-3">
                     <div class="ml-2" style="display: inline-block;height: 14px;width: 14px;border-radius:7px;background-color: #168AEC;"></div>
-                    <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">模型预测与模型诊断：</h3>
+                    <h3 style="display: inline-block;vertical-align:middle;color: #168AEC;font-size:20px;font-weight:600;">模型诊断：</h3>
                     <lable class="mr-sm-2" for="inline-form-custom-select-pref" style="display: inline-block;vertical-align:middle">请选择检测类型</lable>
                     <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
                       id="inline-form-custom-select-pref"
@@ -356,7 +324,7 @@
                                 <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
                                   id="inline-form-custom-select-pref"
                                   class="mb-2 mr-sm-2 mb-sm-0"
-                                  :options="xselected"
+                                  :options="xselected_change"
                                   selected=""
                                   v-model="oselected_1"
                                 ></b-form-select>
@@ -366,7 +334,7 @@
                                 <b-form-select style="display: inline-block;width: auto;vertical-align:middle"
                                   id="inline-form-custom-select-pref"
                                   class="mb-2 mr-sm-2 mb-sm-0"
-                                  :options="xselected"
+                                  :options="xselected_change"
                                   selected=""
                                   v-model="oselected_2"
                                 ></b-form-select>
@@ -383,5 +351,5 @@
     </div>
   </div>
 </body>
-<script type="text/javascript" src="/static/js/index.js"></script>
+<script type="text/javascript" src="/static/js/linear_result.js"></script>
 </html>
