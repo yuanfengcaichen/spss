@@ -1,4 +1,4 @@
-django==3.0.6
+django==3.0.14
 pymysql==0.10.0
 matplotlib==3.2.1
 numpy==1.18.4
